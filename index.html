@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MANAS360 - You're Not Alone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+      window.tailwind = {
+        darkMode: 'class',
+        config: {
+          theme: {
+            extend: {
+              colors: {
+                'wellness-bg': '#FDFCF8',
+                'wellness-slate': '#000000',
+                'wellness-text': '#1A1A1A',
+                'wellness-blue': '#1FA2DE',
+                'wellness-highlight': '#0A4E89',
+                'wellness-light-blue': '#E0F2FE',
+                'wellness-accent': '#38BDF8',
+              },
+              fontFamily: {
+                serif: ['"Crimson Pro"', 'serif'],
+                sans: ['"DM Sans"', 'sans-serif'],
+              },
+              animation: {
+                'breathe': 'breathe 8s infinite ease-in-out',
+                'float': 'float 20s infinite ease-in-out',
+                'fade-in': 'fadeIn 1.5s ease-out',
+                'fade-in-down': 'fadeInDown 1.2s ease-out',
+                'fade-in-up': 'fadeInUp 1.2s ease-out',
+              },
+              keyframes: {
+                breathe: {
+                  '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+                  '50%': { transform: 'scale(1.01)', opacity: '0.95' },
+                },
+                float: {
+                  '0%, 100%': { transform: 'translate(0, 0)' },
+                  '25%': { transform: 'translate(10px, -15px)' },
+                  '50%': { transform: 'translate(-5px, -25px)' },
+                  '75%': { transform: 'translate(-10px, -10px)' },
+                },
+                fadeIn: { 'from': { opacity: '0' }, 'to': { opacity: '1' } },
+                fadeInDown: {
+                  'from': { opacity: '0', transform: 'translateY(-20px)' },
+                  'to': { opacity: '1', transform: 'translateY(0)' },
+                },
+                fadeInUp: {
+                  'from': { opacity: '0', transform: 'translateY(20px)' },
+                  'to': { opacity: '1', transform: 'translateY(0)' },
+                },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    
+    <script>
+      (function() {
+        try {
+          const savedTheme = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {
+          console.error('Error initializing theme:', e);
+        }
+      })();
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --dark-bg: #030712;      /* Deep Black-Gray (Slate 950) */
+        --dark-card: #111827;    /* Dark Card background (Slate 900) */
+        --dark-text: #f9fafb;    /* Clean White-Gray (Slate 50) */
+        --dark-muted: #d1d5db;   /* Bright Muted Gray (Gray 300) for better visibility */
+        --dark-border: #1f2937;  /* Subtle Border (Gray 800) */
+      }
+
+      body {
+        transition: background-color 0.4s ease, color 0.4s ease;
+      }
+
+      /* UNIVERSAL DARK MODE OVERRIDES */
+      .dark body, 
+      .dark main, 
+      .dark #root,
+      .dark .bg-\[\#FDFCF8\],
+      .dark .bg-wellness-bg {
+        background-color: var(--dark-bg) !important;
+        color: var(--dark-text) !important;
+      }
+
+      /* Sections and common containers */
+      .dark section, 
+      .dark article, 
+      .dark nav:not(.hero-nav), 
+      .dark footer, 
+      .dark .bg-white {
+        background-color: var(--dark-bg) !important;
+        color: var(--dark-text) !important;
+      }
+
+      /* Targeted Soft Dark Cards Fix */
+      .dark div[class*="bg-[#F0F7FF]"],
+      .dark div[class*="bg-sky-50"],
+      .dark div[class*="bg-slate-50"],
+      .dark div[class*="bg-white"],
+      .dark .bg-\[\#F1F4F6\] {
+        background-color: var(--dark-card) !important;
+        background-image: none !important;
+        border-color: var(--dark-border) !important;
+      }
+
+      /* Exception for hero content boxes to remain blended with background image */
+      .dark .hero-box {
+        background-color: transparent !important;
+        background-image: none !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+      }
+
+      /* Restore original gradients but dimmed for soft dark mode */
+      .dark .bg-gradient-to-b {
+        background-image: linear-gradient(to bottom, var(--dark-bg), #020617) !important;
+      }
+
+      /* Text color fixes for dark mode accessibility */
+      .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark .text-black, .dark .text-wellness-slate, .dark .text-\[\#0A3A78\] {
+        color: var(--dark-text) !important;
+      }
+
+      .dark p, .dark span:not(.text-white):not(.nav-text), .dark li, .dark label, .dark .text-wellness-text, .dark .text-slate-500, .dark .text-slate-600, .dark .text-\[\#475569\], .dark .text-\[\#2E3A48\], .dark .text-\[\#1A1A1A\] {
+        color: var(--dark-muted) !important;
+      }
+
+      .dark button:not(.bg-\[\#1FA2DE\]):not(.bg-red-600):not(.bg-red-700), 
+      .dark .choice-label, 
+      .dark .option-text {
+        color: var(--dark-text);
+      }
+      
+      .dark .text-\[\#1A1A1A\], .dark .text-wellness-slate {
+        color: var(--dark-text) !important;
+      }
+
+      /* Inputs and Form Elements */
+      .dark input, .dark textarea, .dark select {
+        background-color: var(--dark-bg) !important;
+        color: var(--dark-text) !important;
+        border-color: var(--dark-border) !important;
+      }
+
+      /* Specific highlights in landing page */
+      .dark .hero .text-\[\#1FA2DE\],
+      .dark .landing .text-sky-300,
+      .dark .landing .text-\[\#0A4E89\],
+      .dark .text-sky-600 {
+        color: #38bdf8 !important;
+      }
+
+      /* CUSTOM SLIDER STYLING */
+      .custom-slider {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent !important;
+        margin: 10px 0;
+      }
+
+      .custom-slider:focus {
+        outline: none;
+      }
+
+      .custom-slider::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 14px;
+        cursor: pointer;
+        background: linear-gradient(to right, #12C112 0%, #AEEA00 25%, #D7C400 49.8%, #FFFFFF 49.8%, #FFFFFF 50.2%, #F24E1E 50.2%, #FF6D00 75%, #D90000 100%);
+        border-radius: 10px;
+        border: none;
+      }
+
+      .custom-slider::-webkit-slider-thumb {
+        height: 28px;
+        width: 28px;
+        border-radius: 50%;
+        background: #008CC9;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -7px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        border: 2px solid #FFFFFF;
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+      .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.1",
+        "react/": "https://aistudiocdn.com/react@^19.2.1/",
+        "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+        "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
+        "jspdf": "https://esm.sh/jspdf@2.5.1",
+        "i18next": "https://esm.sh/i18next@23.7.6",
+        "react-i18next": "https://esm.sh/react-i18next@13.5.0?external=react,react-dom,i18next",
+        "i18next-browser-languagedetector": "https://esm.sh/i18next-browser-languagedetector@7.2.0?external=i18next",
+        "i18next-http-backend": "https://esm.sh/i18next-http-backend@2.4.2?external=i18next"
+      }
+    }
+    </script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
