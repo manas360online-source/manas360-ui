@@ -7,7 +7,7 @@ interface AssessmentProps {
 }
 
 export const Assessment: React.FC<AssessmentProps> = ({ onSubmit }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // State now stores IDs, not displayed strings
   const [symptoms, setSymptoms] = useState<string[]>([]);
   const [impact, setImpact] = useState<string>('');
@@ -39,6 +39,15 @@ export const Assessment: React.FC<AssessmentProps> = ({ onSubmit }) => {
     }, isCritical);
   };
 
+  const handleLogoClick = () => {
+    // Check if user came from Free Tools
+    if (window.location.hash.includes('source=free-tools')) {
+      window.location.hash = `#/${i18n.language}/free-tools`;
+    } else {
+      window.location.hash = ''; // Go to home/landing
+    }
+  };
+
   // Define keys for options
   const symptomKeys = [
     'symptom_1', 'symptom_2', 'symptom_3', 'symptom_4',
@@ -57,14 +66,14 @@ export const Assessment: React.FC<AssessmentProps> = ({ onSubmit }) => {
   return (
     <div className="min-h-screen bg-[#FDFCF8] dark:bg-[#030712] flex flex-col items-center py-12 px-6 animate-fade-in transition-colors duration-500 ease-in-out relative">
       
-      {/* Absolute Top Right Icon */}
-      <div className="absolute top-6 right-6 select-none pointer-events-none drop-shadow-sm z-50">
-        <span className="text-[28px] leading-none">🧿</span>
+      {/* Absolute Top Right Icon - Adjusted for Mobile Right Alignment */}
+      <div className="absolute top-2 right-4 md:top-6 md:right-8 select-none pointer-events-none drop-shadow-sm z-50 text-black dark:text-white">
+        <span className="text-[26px] md:text-[28px] leading-none">🧿</span>
       </div>
 
       {/* Header */}
-      <div className="w-full max-w-3xl mb-12 flex justify-between items-center">
-        <div className="font-serif text-[1.4rem] font-medium text-[#000000] dark:text-slate-100 tracking-[0.1em] uppercase cursor-pointer transition-colors" onClick={() => window.location.hash = ''}>
+      <div className="w-full max-w-3xl mb-12 flex justify-between items-center mt-8 md:mt-0">
+        <div className="font-serif text-[1.4rem] font-medium text-[#000000] dark:text-slate-100 tracking-[0.1em] uppercase cursor-pointer transition-colors" onClick={handleLogoClick}>
           {t('logo_text')}<span className="font-semibold text-[#0A4E89] dark:text-sky-400">360</span>
         </div>
         
@@ -93,8 +102,8 @@ export const Assessment: React.FC<AssessmentProps> = ({ onSubmit }) => {
                   className={`
                     px-6 py-3 rounded-full text-[1rem] font-medium transition-all duration-300 border
                     ${isSelected 
-                      ? 'bg-[#1FA2DE] dark:bg-sky-500 text-white border-transparent shadow-md transform scale-105' 
-                      : 'bg-[#F1F4F6] dark:bg-slate-800 text-[#1A1A1A] dark:text-white border-[#D5D9DD] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      ? 'bg-[#1FA2DE] dark:bg-sky-600 text-white border-transparent shadow-md transform scale-105' 
+                      : 'bg-[#F1F4F6] dark:bg-slate-800 text-[#1A1A1A] dark:text-slate-200 border-[#D5D9DD] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }
                   `}
                 >
@@ -120,8 +129,8 @@ export const Assessment: React.FC<AssessmentProps> = ({ onSubmit }) => {
                   className={`
                     flex-1 min-w-[120px] px-4 py-3 rounded-full text-[1rem] font-medium transition-all duration-300 border text-center whitespace-nowrap
                     ${isSelected 
-                      ? 'bg-[#1FA2DE] dark:bg-sky-500 text-white border-transparent shadow-md' 
-                      : 'bg-[#F1F4F6] dark:bg-slate-800 text-[#1A1A1A] dark:text-white border-[#D5D9DD] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      ? 'bg-[#1FA2DE] dark:bg-sky-600 text-white border-transparent shadow-md' 
+                      : 'bg-[#F1F4F6] dark:bg-slate-800 text-[#1A1A1A] dark:text-slate-200 border-[#D5D9DD] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }
                   `}
                 >
@@ -147,8 +156,8 @@ export const Assessment: React.FC<AssessmentProps> = ({ onSubmit }) => {
                   className={`
                     w-full px-6 py-4 rounded-full text-[1.1rem] font-medium transition-all duration-300 border text-left flex justify-between items-center
                     ${isSelected 
-                      ? 'bg-[#1FA2DE] dark:bg-sky-500 text-white border-transparent shadow-md' 
-                      : 'bg-[#F1F4F6] dark:bg-slate-800 text-[#1A1A1A] dark:text-white border-[#D5D9DD] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      ? 'bg-[#1FA2DE] dark:bg-sky-600 text-white border-transparent shadow-md' 
+                      : 'bg-[#F1F4F6] dark:bg-slate-800 text-[#1A1A1A] dark:text-slate-200 border-[#D5D9DD] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }
                   `}
                 >

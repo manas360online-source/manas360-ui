@@ -10,13 +10,13 @@ export const SoundTherapyLanding: React.FC = () => {
   const freePlayerRef = useRef<HTMLAudioElement | null>(null);
   
   // Updated Image URLs - Sound Therapy / Singing Bowls Hero
-  const HERO_IMAGE =  "https://practical-chocolate-o8loampfm5.edgeone.app/sound-therapy-hero.png";
+  const HERO_IMAGE =  "/images/sound-therapy-hero.jpg";
   
   // Free Track URL - Using a reliable remote URL to prevent 404 errors
   const FREE_TRACK_URL = "/audio/free/music_from_another_world.mp3";
   
   // Categories
-  const TEMPLE_IMAGE =  "https://www.peakadventuretour.com/assets/imgs/famous-temples-south-india.webp";
+  const TEMPLE_IMAGE = "/images/Tirupati_temple.jpg";
   const BEACH_IMAGE = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop";
   const MOUNTAIN_IMAGE = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000&auto=format&fit=crop";
   const FOREST_IMAGE = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1000&auto=format&fit=crop";
@@ -96,7 +96,12 @@ export const SoundTherapyLanding: React.FC = () => {
   };
 
   const handleBack = () => {
-    window.location.hash = `#/${i18n.language}/home`;
+    // Check if user came from Free Tools
+    if (window.location.hash.includes('source=free-tools')) {
+      window.location.hash = `#/${i18n.language}/free-tools`;
+    } else {
+      window.location.hash = `#/${i18n.language}/home`;
+    }
   };
 
   const handleFreePlay = () => {

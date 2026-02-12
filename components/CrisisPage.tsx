@@ -3,15 +3,23 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const CrisisPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [showCounselor, setShowCounselor] = useState(false);
+
+  const handleBack = () => {
+    if (window.location.hash.includes('source=free-tools')) {
+      window.location.hash = `#/${i18n.language}/free-tools`;
+    } else {
+      window.location.hash = '#/assessment';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FEF2F2] dark:bg-[#1a0505] flex flex-col items-center justify-center p-6 text-center animate-fade-in transition-colors duration-500 relative">
       
       {/* Back Button */}
       <button 
-        onClick={() => window.location.hash = '#/assessment'} 
+        onClick={handleBack} 
         className="absolute top-6 left-6 md:top-10 md:left-10 flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-red-700 dark:hover:text-red-400 transition-colors font-bold text-sm"
       >
         ← {t('back')}

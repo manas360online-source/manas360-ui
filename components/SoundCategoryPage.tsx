@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { storageService } from '../utils/storageService';
 
 interface Track {
@@ -21,10 +22,10 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     subtitle: "Rhythmic waves to soothe your soul",
     image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2560&auto=format&fit=crop",
     tracks: [
-      { title: "Relaxing Flute Waves", duration: "15:00", url: "/audio/beach/beach_part1.mp3" },
-      { title: "Relaxing Flute Waves", duration: "15:00", url: "/audio/beach/beach_part2.mp3" },
-      { title: "Relaxing Flute Waves", duration: "15:00", url: "/audio/beach/beach_part3.mp3" },
-      { title: "Relaxing Flute Waves", duration: "15:27", url: "/audio/beach/beach_part4.mp3" }
+      { title: "Gentle Morning Tide", duration: "10:00", url: "/audio/beach/beach_part1.mp3" },
+      { title: "Deep Blue Horizon", duration: "15:00", url: "/audio/beach/beach_part2.mp3" },
+      { title: "Sunset Waves", duration: "12:00", url: "/audio/beach/beach_part3.mp3" },
+      { title: "Midnight Shore", duration: "20:00", url: "/audio/beach/beach_part4.mp3" }
     ]
   },
   mountain: {
@@ -32,10 +33,10 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     subtitle: "High altitude silence and clarity",
     image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2560&auto=format&fit=crop",
     tracks: [
-      { title: "Peaceful Breeze Meditation", duration: "15:00", url: "/audio/mountain/mountain_part1.mp3" },
-      { title: "Peaceful Breeze Meditation", duration: "15:00", url: "/audio/mountain/mountain_part2.mp3" },
-      { title: "Peaceful Breeze Meditation", duration: "15:00", url: "/audio/mountain/mountain_part3.mp3" },
-      { title: "Peaceful Breeze Meditation", duration: "15:24", url: "/audio/mountain/mountain_part4.mp3" }
+      { title: "Misty Valley", duration: "10:00", url: "/audio/mountain/mountain_part1.mp3" },
+      { title: "Summit Wind", duration: "15:00", url: "/audio/mountain/mountain_part2.mp3" },
+      { title: "Alpine Stream", duration: "12:00", url: "/audio/mountain/mountain_part3.mp3" },
+      { title: "Snowfall Silence", duration: "20:00", url: "/audio/mountain/mountain_part4.mp3" }
     ]
   },
   forest: {
@@ -43,18 +44,18 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     subtitle: "Nature sounds to reset your mind",
     image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop",
     tracks: [
-      { title: "Anti-Stress Indian Sitar Meditation", duration: "15:00", url: "/audio/forest/forest_part1.mp3" },
-      { title: "Anti-Stress Indian Sitar Meditation", duration: "15:00", url: "/audio/forest/forest_part2.mp3" },
-      { title: "Anti-Stress Indian Sitar Meditation", duration: "15:00", url: "/audio/forest/forest_part3.mp3" },
-      { title: "Anti-Stress Indian Sitar Meditation", duration: "18:50", url: "/audio/forest/forest_part4.mp3" }
+      { title: "Birdsong Awakening", duration: "10:00", url: "/audio/forest/forest_part1.mp3" },
+      { title: "Canopy Rain", duration: "15:00", url: "/audio/forest/forest_part2.mp3" },
+      { title: "River Flow", duration: "12:00", url: "/audio/forest/forest_part3.mp3" },
+      { title: "Night Crickets", duration: "20:00", url: "/audio/forest/forest_part4.mp3" }
     ]
   },
   temple: {
     title: "Divine Frequency",
     subtitle: "Ancient vibrations for deep focus",
-    image: "https://www.peakadventuretour.com/assets/imgs/famous-temples-south-india.webp", // Hindu Temple
+    image: "https://www.peakadventuretour.com/assets/imgs/famous-temples-south-india.webp",
     tracks: [
-      { title: "Om Mani Padme Hum", duration: "03:57", url: "/audio/temple/om_mani_padme_hum.mp3" }
+      { title: "Om Mani Padme Hum", duration: "30:00", url: "/audio/temple/om_mani_padme_hum.mp3" }
     ]
   }
 };
@@ -64,6 +65,7 @@ interface SoundCategoryPageProps {
 }
 
 export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }) => {
+  const { i18n } = useTranslation();
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -79,9 +81,18 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
     // Security Check: Redirect if free
     const plan = storageService.getSoundTherapyPlan();
     if (plan === 'free') {
-      window.location.hash = '#/sound-therapy/plans';
+      window.location.hash = `#/${i18n.language}/sound-therapy`;
     }
-  }, [category]);
+
+    return () => {
+      // Cleanup on unmount
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.removeAttribute('src');
+        audioRef.current.load();
+      }
+    };
+  }, [category, i18n.language]);
 
   const formatTime = (time: number) => {
     if (isNaN(time)) return '0:00';
@@ -94,11 +105,22 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
+        setIsPlaying(false);
       } else {
         if (loadError) return;
-        audioRef.current.play().catch(e => console.error("Playback failed. User interaction might be required."));
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => setIsPlaying(true))
+            .catch(e => {
+              // Ignore AbortError which happens on rapid clicks or unmount
+              if (e.name !== 'AbortError') {
+                 console.warn("Playback prevented/failed:", e);
+              }
+              setIsPlaying(false);
+            });
+        }
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -107,16 +129,25 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
     
     setLoadError(false);
     setCurrentTrackIndex(index);
-    setIsPlaying(true);
+    setIsPlaying(true); // Optimistic UI update
     setCurrentTime(0);
     
     const url = data.tracks[index].url;
     console.log(`Playing: ${url}`);
 
-    // Timeout to allow src update
+    // Timeout to allow src update in the DOM
     setTimeout(() => {
       if (audioRef.current) {
-        audioRef.current.play().catch(e => console.error("Playback failed. User interaction might be required."));
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            // Ignore AbortError
+            if (e.name !== 'AbortError') {
+                console.warn("Playback prevented/failed during track switch:", e);
+            }
+            setIsPlaying(false); // Revert state on failure
+          });
+        }
       }
     }, 100);
   };
@@ -137,7 +168,9 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
   const onError = () => {
     setLoadError(true);
     setIsPlaying(false);
-    console.error(`Audio file not found: ${data.tracks[currentTrackIndex].url}. Please ensure file exists in public/audio/...`);
+    if (data && data.tracks[currentTrackIndex]) {
+      console.error(`Audio file not found or failed to load: ${data.tracks[currentTrackIndex].url}`);
+    }
   };
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -152,7 +185,7 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
   };
 
   const handleBack = () => {
-    window.location.hash = '#/sound-therapy';
+    window.location.hash = `#/${i18n.language}/sound-therapy`;
   };
 
   if (!data) return <div>Category not found</div>;
@@ -160,6 +193,11 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
   return (
     <div className="min-h-screen bg-[#FDFCF8] relative transition-colors duration-500">
       
+      {/* ABSOLUTE NAZAR BOTTU - TOP RIGHT CORNER OF PAGE */}
+      <div className="absolute top-6 right-6 z-[2000] select-none pointer-events-none drop-shadow-sm">
+        <span className="text-[28px] leading-none">🧿</span>
+      </div>
+
       {/* Background with Blur */}
       <div className="absolute inset-0 h-[60vh] overflow-hidden z-0">
         <img src={data.image} className="w-full h-full object-cover" alt={data.title} />
@@ -184,7 +222,7 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
             {/* Error Message */}
             {loadError && (
               <div className="w-full bg-red-50 text-red-500 p-3 rounded-xl mb-6 text-center text-sm font-medium border border-red-100">
-                ⚠️ Audio file not found. Please upload MP3 to public{data.tracks[currentTrackIndex].url}
+                ⚠️ Audio file not found. Please ensure URL is correct or try another track.
               </div>
             )}
 
@@ -211,7 +249,7 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
               <button 
                 onClick={() => playTrack((currentTrackIndex - 1 + data.tracks.length) % data.tracks.length)}
                 className="text-3xl text-[#0A3A78] hover:opacity-70 transition-opacity"
-                disabled={loadError}
+                disabled={loadError && data.tracks.length <= 1}
               >
                 ⏮
               </button>
@@ -225,7 +263,7 @@ export const SoundCategoryPage: React.FC<SoundCategoryPageProps> = ({ category }
               <button 
                 onClick={() => playTrack((currentTrackIndex + 1) % data.tracks.length)}
                 className="text-3xl text-[#0A3A78] hover:opacity-70 transition-opacity"
-                disabled={loadError}
+                disabled={loadError && data.tracks.length <= 1}
               >
                 ⏭
               </button>

@@ -6,6 +6,7 @@ const HISTORY_KEY = 'mans360_history';
 const SUBSCRIPTION_KEY = 'mans360_subscriptions';
 const CHECKIN_KEY = 'mans360_checkin';
 const SOUND_PLAN_KEY = 'soundTherapyPlan';
+const AR_PLAN_KEY = 'arThemedRoomPlan';
 
 export interface DemoSubscription {
   id: string;
@@ -197,6 +198,15 @@ export const storageService = {
 
   saveSoundTherapyPlan: (plan: 'free' | 'daily' | 'complete'): void => {
     localStorage.setItem(SOUND_PLAN_KEY, plan);
+  },
+
+  // AR Themed Room Plan
+  getARPlan: (): 'free' | 'premier' | 'plus' => {
+    return (localStorage.getItem(AR_PLAN_KEY) as 'free' | 'premier' | 'plus') || 'free';
+  },
+
+  saveARPlan: (plan: 'free' | 'premier' | 'plus'): void => {
+    localStorage.setItem(AR_PLAN_KEY, plan);
   }
 };
 

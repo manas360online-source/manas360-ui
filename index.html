@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- Preload critical assets to prevent reload/filling effect -->
+    <link rel="preload" as="image" href="https://pngimg.com/d/cloud_PNG16.png">
+    
     <script>
       window.tailwind = {
         darkMode: 'class',
@@ -66,8 +69,8 @@
       (function() {
         try {
           const savedTheme = localStorage.getItem('theme');
-          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+          // Default to LIGHT theme if no preference is saved, ignoring system preference for consistent design
+          if (savedTheme === 'dark') {
             document.documentElement.classList.add('dark');
           } else {
             document.documentElement.classList.remove('dark');
@@ -82,18 +85,27 @@
 
     <style>
       :root {
-        --dark-bg: #030712;      /* Deep Black-Gray (Slate 950) */
+        --dark-bg: #030712;      /* Deep Black-Gray (Slate 950) - Firebase Studio Background */
         --dark-card: #111827;    /* Dark Card background (Slate 900) */
         --dark-text: #f9fafb;    /* Clean White-Gray (Slate 50) */
-        --dark-muted: #d1d5db;   /* Bright Muted Gray (Gray 300) for better visibility */
-        --dark-border: #1f2937;  /* Subtle Border (Gray 800) */
+        --dark-muted: #cbd5e1;   /* Bright Muted Gray (Slate 300) for better visibility */
+        --dark-border: #1f2937;  /* Subtle Border (Slate 800) */
+        --dark-primary-blue: #38bdf8; /* Sky 400 for better contrast on dark than original deep blue */
       }
 
       body {
         transition: background-color 0.4s ease, color 0.4s ease;
       }
 
+      /* Force specific color for elements that must stay dark blue (like cloud text) even in dark mode */
+      .force-cloud-text {
+        color: #0A3A78 !important;
+      }
+
       /* UNIVERSAL DARK MODE OVERRIDES */
+      /* This ensures that when .dark is active, we force these colors on common elements 
+         even if they have specific light-mode classes */
+      
       .dark body, 
       .dark main, 
       .dark #root,
@@ -107,21 +119,22 @@
       .dark section, 
       .dark article, 
       .dark nav:not(.hero-nav), 
-      .dark footer, 
-      .dark .bg-white {
-        background-color: var(--dark-bg) !important;
-        color: var(--dark-text) !important;
+      .dark footer {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
       }
 
-      /* Targeted Soft Dark Cards Fix */
+      /* Targeted Card Fixes - Making white cards dark slate */
       .dark div[class*="bg-[#F0F7FF]"],
       .dark div[class*="bg-sky-50"],
       .dark div[class*="bg-slate-50"],
       .dark div[class*="bg-white"],
-      .dark .bg-\[\#F1F4F6\] {
+      .dark .bg-\[\#F1F4F6\],
+      .dark .bg-white {
         background-color: var(--dark-card) !important;
         background-image: none !important;
         border-color: var(--dark-border) !important;
+        color: var(--dark-text) !important;
       }
 
       /* Exception for hero content boxes to remain blended with background image */
@@ -133,27 +146,44 @@
       }
 
       /* Restore original gradients but dimmed for soft dark mode */
-      .dark .bg-gradient-to-b {
-        background-image: linear-gradient(to bottom, var(--dark-bg), #020617) !important;
+      /* Exclude elements with 'force-original-gradient' (like the ship) from being overridden */
+      .dark .bg-gradient-to-b:not(.force-original-gradient) {
+        background-image: linear-gradient(to bottom, var(--dark-bg), #0f172a) !important;
       }
 
       /* Text color fixes for dark mode accessibility */
-      .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark .text-black, .dark .text-wellness-slate, .dark .text-\[\#0A3A78\] {
+      /* Invert dark blue/black text to white */
+      .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, 
+      .dark .text-black, 
+      .dark .text-wellness-slate, 
+      .dark .text-\[\#0A3A78\]:not(.force-cloud-text):not(.force-light-btn),
+      .dark .text-\[\#000000\],
+      .dark .text-\[\#1A1A1A\] {
         color: var(--dark-text) !important;
       }
 
-      .dark p, .dark span:not(.text-white):not(.nav-text), .dark li, .dark label, .dark .text-wellness-text, .dark .text-slate-500, .dark .text-slate-600, .dark .text-\[\#475569\], .dark .text-\[\#2E3A48\], .dark .text-\[\#1A1A1A\] {
+      /* Invert muted text to lighter grey */
+      /* Added :not(.force-cloud-text) to p tag specifically to protect cloud text */
+      .dark p:not(.force-cloud-text), 
+      .dark span:not(.text-white):not(.nav-text):not(.force-cloud-text):not(.force-light-btn), 
+      .dark li, 
+      .dark label, 
+      .dark .text-wellness-text, 
+      .dark .text-slate-500, 
+      .dark .text-slate-600, 
+      .dark .text-\[\#475569\], 
+      .dark .text-\[\#2E3A48\] {
         color: var(--dark-muted) !important;
       }
 
-      .dark button:not(.bg-\[\#1FA2DE\]):not(.bg-red-600):not(.bg-red-700), 
-      .dark .choice-label, 
-      .dark .option-text {
-        color: var(--dark-text);
+      /* Preserve Button Colors, but ensure text inside is visible */
+      .dark button {
+         /* Generally keep button backgrounds, but fix text if needed */
       }
       
-      .dark .text-\[\#1A1A1A\], .dark .text-wellness-slate {
-        color: var(--dark-text) !important;
+      .dark button:not([class*="bg-"]):not([class*="text-white"]):not([class*="force-light-btn"]) {
+         /* If button has no bg class (outline/ghost), make text white */
+         color: var(--dark-text) !important;
       }
 
       /* Inputs and Form Elements */
@@ -162,13 +192,19 @@
         color: var(--dark-text) !important;
         border-color: var(--dark-border) !important;
       }
+      
+      .dark input::placeholder, .dark textarea::placeholder {
+        color: #64748b !important;
+      }
 
-      /* Specific highlights in landing page */
+      /* Specific highlights in landing page - Make blue links brighter */
       .dark .hero .text-\[\#1FA2DE\],
       .dark .landing .text-sky-300,
       .dark .landing .text-\[\#0A4E89\],
-      .dark .text-sky-600 {
-        color: #38bdf8 !important;
+      .dark .text-sky-600,
+      .dark .text-\[\#1FA2DE\],
+      .dark .text-\[\#1E59FF\] {
+        color: var(--dark-primary-blue) !important;
       }
 
       /* CUSTOM SLIDER STYLING */

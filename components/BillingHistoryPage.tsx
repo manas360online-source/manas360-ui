@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { storageService, DemoSubscription } from '../utils/storageService';
 import { jsPDF } from 'jspdf';
@@ -5,7 +6,7 @@ import { formatCurrency } from '../utils/formatters';
 import { useTranslation } from 'react-i18next';
 
 interface BillingHistoryPageProps {
-  context?: 'general' | 'sound';
+  context?: 'general' | 'sound' | 'ar';
 }
 
 export const BillingHistoryPage: React.FC<BillingHistoryPageProps> = ({ context = 'general' }) => {
@@ -18,6 +19,9 @@ export const BillingHistoryPage: React.FC<BillingHistoryPageProps> = ({ context 
     if (context === 'sound') {
       // Filter for Sound Therapy plans only
       setSubscriptions(allSubs.filter(sub => sub.category === 'Sound Therapy'));
+    } else if (context === 'ar') {
+      // Filter for AR plans
+      setSubscriptions(allSubs.filter(sub => sub.category === 'AR Themed Room'));
     } else {
       setSubscriptions(allSubs);
     }
@@ -27,6 +31,9 @@ export const BillingHistoryPage: React.FC<BillingHistoryPageProps> = ({ context 
     if (context === 'sound') {
       // Return to Sound Pricing Page
       window.location.hash = `#/${i18n.language}/sound-therapy/plans`;
+    } else if (context === 'ar') {
+      // Return to AR Pricing Page
+      window.location.hash = `#/${i18n.language}/ar-themed-room/plans`;
     } else {
       // Return to Main Subscribe Page
       window.location.hash = `#/${i18n.language}/subscribe`;
@@ -40,6 +47,8 @@ export const BillingHistoryPage: React.FC<BillingHistoryPageProps> = ({ context 
     const allSubs = storageService.getSubscriptions();
     if (context === 'sound') {
       setSubscriptions(allSubs.filter(sub => sub.category === 'Sound Therapy'));
+    } else if (context === 'ar') {
+      setSubscriptions(allSubs.filter(sub => sub.category === 'AR Themed Room'));
     } else {
       setSubscriptions(allSubs);
     }
@@ -89,39 +98,30 @@ export const BillingHistoryPage: React.FC<BillingHistoryPageProps> = ({ context 
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#F3F9FF] to-white dark:from-[#030712] dark:to-[#020617] p-4 md:p-8 animate-fade-in transition-colors duration-500 overflow-x-hidden">
       
       <div className="w-full max-w-[1100px] flex flex-col items-center">
-        <div className="w-full relative flex items-center justify-center mb-8 md:mb-12">
+        {/* Header Section */}
+        <div className="w-full relative flex items-center justify-center mb-8 md:mb-10">
           <button 
             onClick={handleBack} 
-            className="absolute left-0 flex items-center gap-1 md:gap-2 text-[#0A3A78] dark:text-white font-medium text-[0.9rem] md:text-[1.1rem] hover:opacity-75 transition-all"
+            className="absolute left-0 flex items-center gap-1 md:gap-2 text-[#0A3A78] dark:text-white font-medium text-[0.9rem] md:text-[1.1rem] hover:opacity-75 transition-all z-20"
           >
             <span className="text-xl md:text-2xl">←</span> <span className="hidden sm:inline">Back</span>
           </button>
           
-          <h1 className="font-serif text-[1.75rem] sm:text-[2.2rem] md:text-[3.2rem] font-bold text-[#0A3A78] dark:text-white text-center transition-colors px-8 leading-tight">
-            {context === 'sound' ? 'Sound Therapy History' : 'Billing / Subscription History'}
+          <h1 className="font-serif text-[1.75rem] sm:text-[2.2rem] md:text-[3.2rem] font-bold text-[#0A3A78] dark:text-white text-center transition-colors px-12 md:px-20 leading-tight z-10">
+            {context === 'sound' ? 'Sound Therapy History' : context === 'ar' ? 'AR Room History' : 'Billing / Subscription History'}
           </h1>
 
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
-            <div className="hidden lg:flex bg-white dark:bg-[#111827] px-5 py-3 rounded-2xl shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-800 items-center gap-4">
-               <div className="text-right">
-                  <p className="text-[#0A3A78] dark:text-white font-bold text-sm leading-tight">Auto-Renewal</p>
-                  <p className="text-slate-400 dark:text-slate-500 text-[0.7rem] font-medium">Renew plans automatically</p>
-               </div>
-               <button 
-                 onClick={() => setAutoRenewal(!autoRenewal)}
-                 className={`w-12 h-6 rounded-full p-1 transition-colors duration-300 flex items-center ${autoRenewal ? 'bg-[#10B981]' : 'bg-slate-300 dark:bg-slate-600'}`}
-               >
-                  <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-300 ${autoRenewal ? 'translate-x-6' : 'translate-x-0'}`}></div>
-               </button>
-            </div>
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4 z-20">
+            {/* Auto Renewal Removed from here to prevent overlap */}
             <div className="select-none pointer-events-none drop-shadow-sm">
               <span className="text-[28px] leading-none">🧿</span>
             </div>
           </div>
         </div>
 
-        <div className="lg:hidden w-full mb-8 flex justify-center">
-            <div className="bg-white dark:bg-[#111827] px-6 py-4 rounded-[20px] shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between w-full max-w-[340px]">
+        {/* Auto Renewal Toggle - Centered Below Title */}
+        <div className="w-full mb-10 flex justify-center">
+            <div className="bg-white dark:bg-[#111827] px-6 py-4 rounded-[20px] shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-8 min-w-[300px]">
                 <div className="text-left">
                   <p className="text-[#0A3A78] dark:text-white font-bold text-sm leading-tight">Auto-Renewal</p>
                   <p className="text-slate-400 dark:text-slate-500 text-[0.75rem] font-medium mt-0.5">Renew plans automatically</p>
@@ -142,7 +142,7 @@ export const BillingHistoryPage: React.FC<BillingHistoryPageProps> = ({ context 
               <div className="text-5xl md:text-6xl mb-4 md:mb-6">📄</div>
               <p className="text-lg md:text-xl text-slate-500 dark:text-white font-medium">No subscription records found.</p>
               <p className="text-sm md:text-base text-slate-400 dark:text-slate-400 mt-2">
-                {context === 'sound' ? 'Your sound therapy plan history will appear here.' : 'Any demo subscriptions you make will appear here.'}
+                {context === 'sound' ? 'Your sound therapy plan history will appear here.' : context === 'ar' ? 'Your AR themed room plan history will appear here.' : 'Any demo subscriptions you make will appear here.'}
               </p>
             </div>
           ) : (

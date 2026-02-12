@@ -37,9 +37,10 @@ export const LanguageSwitcher: React.FC = () => {
       shadow-sm hover:shadow-md
       flex items-center justify-center
       min-w-[80px] md:min-w-[90px]
+      force-light-btn
       ${isSelected 
-        ? 'bg-[#1FA2DE] dark:bg-sky-600 text-white border-[#1FA2DE] dark:border-sky-600 shadow-md transform scale-105' 
-        : 'bg-white/90 dark:bg-slate-800/90 text-[#0A3A78] dark:text-slate-200 border-slate-100 dark:border-slate-700 hover:bg-sky-50 dark:hover:bg-slate-700'
+        ? 'bg-[#1FA2DE] text-white border-[#1FA2DE] shadow-md transform scale-105' 
+        : '!bg-white/90 !text-[#0A3A78] border-slate-100 hover:bg-sky-50'
       }
     `;
   };
