@@ -34,7 +34,7 @@ import { CancellationRefundPolicy } from './components/CancellationRefundPolicy'
 import { ARThemedRoomLanding } from './components/ARThemedRoomLanding';
 import { ARPlansPage } from './components/ARPlansPage';
 import { ARThemePlayer } from './components/ARThemePlayer';
-import { ARRealRoomPlayer } from './components/ARRealRoomPlayer';
+import { ARRealRoomPlayer } from './components/ARRealRoomplayer';
 import { FreeToolsPage } from './components/FreeToolsPage';
 import { Session } from './types';
 import { storageService } from './utils/storageService';
