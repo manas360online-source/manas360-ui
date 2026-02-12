@@ -18,7 +18,7 @@ const AR_THEMES = [
     title: 'Green Tea Plantation',
     videoUrl: 'https://manas360-themed-rooms.s3.ap-south-1.amazonaws.com/themes/green-tea-plantations-in-munnar-kerala-india.mp4',
     audioUrl: 'https://cdn.pixabay.com/audio/2022/04/27/audio_65b3693f93.mp3', 
-    thumbnail: '/public/images/Tea-estate.jpg', // Local image for better optimization
+    thumbnail: 'public/images/Tea-estate.jpg', // Local image for better optimization
     icon: '🍃',
     tier: 'free'
   },
