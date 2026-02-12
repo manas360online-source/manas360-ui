@@ -58,8 +58,8 @@ export const Header: React.FC = () => {
           <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-[2px] bg-sky-200/60 dark:bg-sky-500/60 rounded-full transition-colors"></div>
         </div>
         
-        {/* Language Switcher Placed Here */}
-        <div className="mt-6">
+        {/* Language Switcher Placed Here - Reduced top margin on mobile */}
+        <div className="mt-0 md:mt-6">
           <LanguageSwitcher />
         </div>
       </div>

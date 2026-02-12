@@ -46,7 +46,7 @@ export const LanguageSwitcher: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-2 md:gap-3 mt-4 animate-fade-in">
+    <div className="flex flex-col items-center gap-2 md:gap-3 mt-2 md:mt-4 animate-fade-in">
       {/* First Row: 3 Languages */}
       <div className="flex items-center justify-center gap-2 md:gap-3">
         {LANGUAGES.slice(0, 3).map((lang) => (

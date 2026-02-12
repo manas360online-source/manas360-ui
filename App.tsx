@@ -34,7 +34,7 @@ import { CancellationRefundPolicy } from './components/CancellationRefundPolicy'
 import { ARThemedRoomLanding } from './components/ARThemedRoomLanding';
 import { ARPlansPage } from './components/ARPlansPage';
 import { ARThemePlayer } from './components/ARThemePlayer';
-import { ARRealRoomPlayer } from './components/ARRealRoomplayer';
+import { ARRealRoomPlayer } from './components/ARRealRoomPlayer';
 import { FreeToolsPage } from './components/FreeToolsPage';
 import { Session } from './types';
 import { storageService } from './utils/storageService';
@@ -78,20 +78,20 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
   const [currentSoundCategory, setCurrentSoundCategory] = useState<string>('');
   const [currentARThemeId, setCurrentARThemeId] = useState<string>('');
-    const [isTransitioning, setIsTransitioning] = useState(false);
-    const [assessmentData, setAssessmentData] = useState<any>(null);
-    const [userData, setUserData] = useState<any>({});
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [assessmentData, setAssessmentData] = useState<any>(null);
+  const [userData, setUserData] = useState<any>({});
   
-    const [editingSession, setEditingSession] = useState<Session | undefined>(undefined);
-    const [activeSession, setActiveSession] = useState<Session | undefined>(undefined);
-    const [viewingHistoryRecord, setViewingHistoryRecord] = useState<any>(null);
+  const [editingSession, setEditingSession] = useState<Session | undefined>(undefined);
+  const [activeSession, setActiveSession] = useState<Session | undefined>(undefined);
+  const [viewingHistoryRecord, setViewingHistoryRecord] = useState<any>(null);
 
-    // Helper to get base path with current language
-    const getPath = (view: string) => `#/${i18n.language}/${view}`;
+  // Helper to get base path with current language
+  const getPath = (view: string) => `#/${i18n.language}/${view}`;
 
-    useEffect(() => {
-      const handleHashChange = () => {
-        const hash = window.location.hash;
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
       
         // Regex to parse #/lang/view
         const match = hash.match(/^#\/([a-z]{2})\/(.*)$/);
@@ -150,179 +150,179 @@ const App: React.FC = () => {
              }
           }
         }
-      };
+    };
 
-      // View Mapper
-      const mapView = (viewPath: string) => {
-        if (viewPath === 'assessment') setCurrentView('assessment');
-        else if (viewPath === 'results') setCurrentView('results');
-        else if (viewPath === 'crisis') setCurrentView('crisis');
-        else if (viewPath === 'home') setCurrentView('home');
-        else if (viewPath === 'onboarding/name') setCurrentView('onboarding-name');
-        else if (viewPath === 'onboarding/email') setCurrentView('onboarding-email');
-        else if (viewPath === 'full-assessment') setCurrentView('full-assessment');
-        else if (viewPath === 'assessment/run') setCurrentView('run-assessment');
-        else if (viewPath === 'assessment/view') setCurrentView('session-results');
-        else if (viewPath === 'therapist') setCurrentView('therapist-dashboard');
-        else if (viewPath === 'therapist/builder') setCurrentView('session-builder');
-        else if (viewPath === 'therapist/preview') setCurrentView('session-preview');
-        else if (viewPath === 'subscribe') setCurrentView('subscribe');
-        else if (viewPath === 'subscribe/patients') setCurrentView('subscribe-patients');
-        else if (viewPath === 'subscribe/therapists') setCurrentView('subscribe-therapists');
-        else if (viewPath === 'subscribe/corporate') setCurrentView('subscribe-corporate');
-        else if (viewPath === 'subscribe/guru') setCurrentView('subscribe-guru');
-        else if (viewPath === 'billing') setCurrentView('billing');
-        else if (viewPath === 'streaks') setCurrentView('streaks-journey');
-        else if (viewPath === 'sound-therapy') setCurrentView('sound-therapy');
-        else if (viewPath === 'sound-therapy-plans') setCurrentView('sound-therapy-plans');
-        else if (viewPath === 'sound-therapy-category') setCurrentView('sound-therapy-category');
-        else if (viewPath === 'sound-billing') setCurrentView('sound-billing');
-        else if (viewPath === 'ar-themed-room') setCurrentView('ar-themed-room');
-        else if (viewPath === 'ar-plans') setCurrentView('ar-plans');
-        else if (viewPath === 'ar-billing') setCurrentView('ar-billing');
-        else if (viewPath === 'ar-player') setCurrentView('ar-player');
-        else if (viewPath === 'ar-real-room') setCurrentView('ar-real-room');
-        else if (viewPath === 'developer-api-resources') setCurrentView('developer-api-resources');
-        else if (viewPath === 'cancellation-refund-policy') setCurrentView('cancellation-refund-policy');
-        else if (viewPath === 'free-tools') setCurrentView('free-tools');
+    // View Mapper
+    const mapView = (viewPath: string) => {
+      if (viewPath === 'assessment') setCurrentView('assessment');
+      else if (viewPath === 'results') setCurrentView('results');
+      else if (viewPath === 'crisis') setCurrentView('crisis');
+      else if (viewPath === 'home') setCurrentView('home');
+      else if (viewPath === 'onboarding/name') setCurrentView('onboarding-name');
+      else if (viewPath === 'onboarding/email') setCurrentView('onboarding-email');
+      else if (viewPath === 'full-assessment') setCurrentView('full-assessment');
+      else if (viewPath === 'assessment/run') setCurrentView('run-assessment');
+      else if (viewPath === 'assessment/view') setCurrentView('session-results');
+      else if (viewPath === 'therapist') setCurrentView('therapist-dashboard');
+      else if (viewPath === 'therapist/builder') setCurrentView('session-builder');
+      else if (viewPath === 'therapist/preview') setCurrentView('session-preview');
+      else if (viewPath === 'subscribe') setCurrentView('subscribe');
+      else if (viewPath === 'subscribe/patients') setCurrentView('subscribe-patients');
+      else if (viewPath === 'subscribe/therapists') setCurrentView('subscribe-therapists');
+      else if (viewPath === 'subscribe/corporate') setCurrentView('subscribe-corporate');
+      else if (viewPath === 'subscribe/guru') setCurrentView('subscribe-guru');
+      else if (viewPath === 'billing') setCurrentView('billing');
+      else if (viewPath === 'streaks') setCurrentView('streaks-journey');
+      else if (viewPath === 'sound-therapy') setCurrentView('sound-therapy');
+      else if (viewPath === 'sound-therapy-plans') setCurrentView('sound-therapy-plans');
+      else if (viewPath === 'sound-therapy-category') setCurrentView('sound-therapy-category');
+      else if (viewPath === 'sound-billing') setCurrentView('sound-billing');
+      else if (viewPath === 'ar-themed-room') setCurrentView('ar-themed-room');
+      else if (viewPath === 'ar-plans') setCurrentView('ar-plans');
+      else if (viewPath === 'ar-billing') setCurrentView('ar-billing');
+      else if (viewPath === 'ar-player') setCurrentView('ar-player');
+      else if (viewPath === 'ar-real-room') setCurrentView('ar-real-room');
+      else if (viewPath === 'developer-api-resources') setCurrentView('developer-api-resources');
+      else if (viewPath === 'cancellation-refund-policy') setCurrentView('cancellation-refund-policy');
+      else if (viewPath === 'free-tools') setCurrentView('free-tools');
       
-        else setCurrentView('landing');
-      };
-
-      handleHashChange();
-      window.addEventListener('hashchange', handleHashChange);
-      return () => window.removeEventListener('hashchange', handleHashChange);
-    }, [i18n]);
-
-    useEffect(() => {
-      if (currentView !== 'landing') return;
-
-      const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px',
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-
-      const revealElements = document.querySelectorAll('.reveal');
-      revealElements.forEach((el) => observer.observe(el));
-
-      return () => observer.disconnect();
-    }, [currentView]);
-
-    const navigate = (view: string) => {
-      window.location.hash = getPath(view);
+      else setCurrentView('landing');
     };
 
-    const handleStartAssessment = () => navigate('assessment');
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [i18n]);
 
-    const handleAssessmentSubmit = (data: any, isCritical: boolean) => {
-      setAssessmentData(data);
-      if (isCritical) {
-        navigate('crisis');
-      } else {
-        navigate('results');
-      }
+  useEffect(() => {
+    if (currentView !== 'landing') return;
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px',
     };
 
-    const handleUpdateUser = (data: any) => {
-      setUserData({ ...userData, ...data });
-    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
 
-    const handleStartSession = (session: Session) => {
-      setActiveSession(session);
-      navigate('assessment/run');
-    };
+    const revealElements = document.querySelectorAll('.reveal');
+    revealElements.forEach((el) => observer.observe(el));
 
-    const handleSessionComplete = (answers: any) => {
-      if (activeSession) {
-        storageService.saveHistory({
-          sessionTitle: activeSession.title,
-          sessionId: activeSession.id,
-          answers: answers
-        });
-      }
-      navigate('full-assessment');
-    };
+    return () => observer.disconnect();
+  }, [currentView]);
 
-    const handleViewHistory = (record: any) => {
-      setViewingHistoryRecord(record);
-      navigate('assessment/view');
-    };
+  const navigate = (view: string) => {
+    window.location.hash = getPath(view);
+  };
 
-    const handleCreateSession = () => {
-      setEditingSession(undefined);
-      navigate('therapist/builder');
-    };
+  const handleStartAssessment = () => navigate('assessment');
 
-    const handleEditSession = (session: Session) => {
-      setEditingSession(session);
-      navigate('therapist/builder');
-    };
+  const handleAssessmentSubmit = (data: any, isCritical: boolean) => {
+    setAssessmentData(data);
+    if (isCritical) {
+      navigate('crisis');
+    } else {
+      navigate('results');
+    }
+  };
+
+  const handleUpdateUser = (data: any) => {
+    setUserData({ ...userData, ...data });
+  };
+
+  const handleStartSession = (session: Session) => {
+    setActiveSession(session);
+    navigate('assessment/run');
+  };
+
+  const handleSessionComplete = (answers: any) => {
+    if (activeSession) {
+      storageService.saveHistory({
+        sessionTitle: activeSession.title,
+        sessionId: activeSession.id,
+        answers: answers
+      });
+    }
+    navigate('full-assessment');
+  };
+
+  const handleViewHistory = (record: any) => {
+    setViewingHistoryRecord(record);
+    navigate('assessment/view');
+  };
+
+  const handleCreateSession = () => {
+    setEditingSession(undefined);
+    navigate('therapist/builder');
+  };
+
+  const handleEditSession = (session: Session) => {
+    setEditingSession(session);
+    navigate('therapist/builder');
+  };
   
-    const handlePreviewSession = (session: Session) => {
-      setActiveSession(session);
-      navigate('therapist/preview');
-    };
+  const handlePreviewSession = (session: Session) => {
+    setActiveSession(session);
+    navigate('therapist/preview');
+  };
 
-    const handleFloatingCloudClick = () => {
-      window.location.hash = '#/free-tools';
-    };
+  const handleFloatingCloudClick = () => {
+    window.location.hash = '#/free-tools';
+  };
 
-    return (
+  return (
+    <div 
+      className={`
+        relative min-h-screen font-sans 
+        text-wellness-slate dark:text-slate-100
+        bg-wellness-bg dark:bg-[#030712]
+        transition-colors duration-500 ease-in-out
+        ${isTransitioning ? 'opacity-0' : 'opacity-100'}
+      `}
+    >
+      {/* FLOATING CLOUD CTA (PERSISTENT IN APP, VISIBLE ONLY ON HOME) */}
       <div 
-        className={`
-          relative min-h-screen font-sans 
-          text-wellness-slate dark:text-slate-100
-          bg-wellness-bg dark:bg-[#030712]
-          transition-colors duration-500 ease-in-out
-          ${isTransitioning ? 'opacity-0' : 'opacity-100'}
-        `}
+        className={`fixed top-40 md:top-24 right-0 md:right-0 lg:right-0 z-[2500] cursor-pointer group flex flex-col items-center animate-float transition-opacity duration-300 ${(currentView === 'home') ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={handleFloatingCloudClick}
+        style={{ animationDuration: '6s' }}
       >
-        {/* FLOATING CLOUD CTA (PERSISTENT IN APP, VISIBLE ONLY ON HOME) */}
-        <div 
-          className={`fixed top-40 md:top-20 right-0 md:right-0 lg:right-0 z-[1400] cursor-pointer group flex flex-col items-center animate-float transition-opacity duration-300 ${currentView === 'home' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-          onClick={handleFloatingCloudClick}
-          style={{ animationDuration: '6s' }}
-        >
-          <div className="relative w-[130px] md:w-[170px] lg:w-[370px] hover:scale-105 transition-transform duration-500 filter drop-shadow-2xl">
-             <img 
-               src="/images/floating-cloud.png" 
-               alt="Start Free" 
-               loading="eager"
-               className="w-full h-auto object-contain opacity-100 brightness-110 contrast-125 relative z-10"
-             />
-             {/* Text Overlay on Cloud */}
-             <div className="absolute top-[48%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full pt-2 z-20">
-                {/* Added 'force-cloud-text' class to prevent white text in dark mode */}
-                <p className="font-serif font-bold text-[#0A3A78] force-cloud-text text-[0.8rem] md:text-[0.9rem] lg:text-[2.2rem] leading-[1.1] tracking-tight drop-shadow-md whitespace-nowrap lg:whitespace-normal">
-                  Click to<br/>Start Free
-                </p>
-             </div>
+        <div className="relative w-[160px] md:w-[190px] lg:w-[370px] hover:scale-105 transition-transform duration-500 filter drop-shadow-2xl">
+           <img 
+             src="https://pngimg.com/d/cloud_PNG16.png" 
+             alt="Start Free" 
+             loading="eager"
+             className="w-full h-auto object-contain opacity-100 brightness-110 contrast-125 relative z-10"
+           />
+           {/* Text Overlay on Cloud */}
+           <div className="absolute top-[48%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full pt-2 z-20">
+              {/* Added 'force-cloud-text' class to prevent white text in dark mode */}
+              <p className="font-serif font-bold text-[#0A3A78] force-cloud-text text-[0.8rem] md:text-[0.9rem] lg:text-[2.2rem] leading-[1.1] tracking-tight drop-shadow-md whitespace-nowrap lg:whitespace-normal">
+                Click to<br/>Start Free
+              </p>
+           </div>
 
-             {/* Shiny Blowing Thunder Effect */}
-             <div className="absolute top-[75%] left-1/2 transform -translate-x-1/2 z-0 flex justify-center">
-                <div className="relative">
-                  <svg 
-                    viewBox="0 0 24 24" 
-                    fill="currentColor" 
-                    className="w-8 h-8 md:w-8 md:h-8 lg:w-20 lg:h-20 text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)] animate-pulse"
-                  >
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                  </svg>
-                  {/* Glow effect backing */}
-                  <div className="absolute inset-0 bg-sky-400 blur-xl opacity-40 animate-pulse"></div>
-                </div>
-             </div>
-          </div>
+           {/* Shiny Blowing Thunder Effect */}
+           <div className="absolute top-[75%] left-1/2 transform -translate-x-1/2 z-0 flex justify-center">
+              <div className="relative">
+                <svg 
+                  viewBox="0 0 24 24" 
+                  fill="currentColor" 
+                  className="w-8 h-8 md:w-8 md:h-8 lg:w-20 lg:h-20 text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)] animate-pulse"
+                >
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                {/* Glow effect backing */}
+                <div className="absolute inset-0 bg-sky-400 blur-xl opacity-40 animate-pulse"></div>
+              </div>
+           </div>
         </div>
+      </div>
 
         {currentView === 'landing' && (
           <>
@@ -392,4 +392,4 @@ const App: React.FC = () => {
     );
   };
 
-  export default App;
+export default App;
