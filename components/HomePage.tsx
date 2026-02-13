@@ -47,6 +47,64 @@ const FacebookLogo = () => (
   </svg>
 );
 
+// --- NEW COMPONENTS ---
+const MobileMenuItem = ({ icon, label }: { icon: string, label: string }) => (
+  <button className="flex items-center gap-3 p-3 w-full text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+    <span className="text-xl">{icon}</span>
+    <span className="text-[1.05rem] font-medium text-slate-700 dark:text-slate-200">{label}</span>
+  </button>
+);
+
+const DropdownButton = ({ title, children }: { title: string, children?: React.ReactNode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <div 
+      className="relative group" 
+      onMouseEnter={() => setIsOpen(true)} 
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <button className="flex items-center gap-1 hover:text-[#1FA2DE] dark:hover:text-sky-400 transition-colors py-2">
+        {title} 
+        <span className={`text-xs transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+      </button>
+      <div className={`absolute top-full left-0 bg-white dark:bg-[#1E293B] shadow-xl rounded-2xl p-2 min-w-[240px] border border-slate-100 dark:border-slate-700 transition-all duration-300 origin-top-left z-50 ${isOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const DropdownItem = ({ icon, label }: { icon: string, label: string }) => (
+  <button className="flex items-center gap-3 px-5 py-3 w-full text-left text-[0.95rem] font-medium text-[#2E3A48] dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-[#0A3A78] dark:hover:text-white rounded-xl transition-all group">
+    <span className="text-lg group-hover:scale-110 transition-transform">{icon}</span>
+    <span>{label}</span>
+  </button>
+);
+
+interface SolutionCardProps {
+  title: string;
+  subtitle?: string;
+  icon: string;
+  delay: string;
+}
+
+const SolutionCard: React.FC<SolutionCardProps> = ({ title, subtitle, icon, delay }) => (
+  <div 
+    className="reveal-on-scroll group bg-white dark:bg-[#111827] p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] hover:-translate-y-2 transition-all duration-300"
+    style={{ transitionDelay: delay }}
+  >
+    <div className="w-16 h-16 bg-blue-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform duration-300">
+      {icon}
+    </div>
+    <h3 className="text-xl font-bold text-[#0A3A78] dark:text-white mb-3">{title}</h3>
+    {subtitle && <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{subtitle}</p>}
+    <div className="mt-6 flex items-center text-[#1FA2DE] dark:text-sky-400 font-bold text-sm group-hover:gap-2 transition-all">
+      Learn more <span>→</span>
+    </div>
+  </div>
+);
+
 export const HomePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -277,13 +335,15 @@ export const HomePage: React.FC = () => {
         </div>
       )}
 
-        {/* LOGIN MODAL */}
+        {/* LOGIN MODAL - RE-DESIGNED FOR PREMIUM FEEL (CALM.COM STYLE) */}
         {isLoginOpen && (
           <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onClick={handleCloseLogin}></div>
             
+            {/* Main Login Card */}
             <div className="relative bg-white dark:bg-[#0F172A] rounded-[32px] max-w-[420px] w-full shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] animate-fade-in-up border border-white/20 dark:border-slate-800 overflow-hidden transform transition-all">
               
+              {/* Close Button - Clean & Minimal */}
               <button 
                 onClick={handleCloseLogin} 
                 className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all z-20"
@@ -291,10 +351,11 @@ export const HomePage: React.FC = () => {
                 <CloseIcon />
               </button>
 
-              {/* IDLE STATE */}
+              {/* IDLE STATE: SHOW LOGIN OPTIONS */}
               {loginStatus === 'idle' && (
                 <div className="p-8 md:p-10">
                   <div className="text-center mb-8">
+                    {/* Brand Icon/Logo */}
                     <div className="font-serif text-[1.8rem] font-bold text-[#0A3A78] dark:text-white tracking-tight mb-2"> 
                       {t('logo_text')}<span className="text-[#1FA2DE]">360</span>
                     </div>
@@ -319,9 +380,10 @@ export const HomePage: React.FC = () => {
                     )}
                   </div>
 
-                  {/* VIEW: MAIN */}
+                  {/* VIEW: MAIN (Login Methods) */}
                   {loginView === 'main' && (
                     <div className="space-y-3.5">
+                      {/* WhatsApp Login - Highlighted */}
                       <button 
                         onClick={() => setLoginView('phone')} 
                         className="group w-full py-3.5 px-4 rounded-full flex items-center justify-center gap-3 bg-[#25D366] text-white font-bold text-[0.95rem] transition-all hover:brightness-105 active:scale-[0.98] shadow-md hover:shadow-lg"
@@ -330,16 +392,19 @@ export const HomePage: React.FC = () => {
                         Login with WhatsApp
                       </button>
 
+                      {/* Apple Login */}
                       <button onClick={() => handleLogin('apple')} className="group w-full py-3.5 px-4 rounded-full flex items-center justify-center gap-3 bg-black text-white dark:bg-white dark:text-black font-bold text-[0.95rem] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
                         <AppleLogo className="w-5 h-5 mb-0.5" />
                         Sign in with Apple
                       </button>
 
+                      {/* Google Login */}
                       <button onClick={() => handleLogin('google')} className="group w-full py-3.5 px-4 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-white font-bold text-[0.95rem] hover:bg-slate-50 dark:hover:bg-slate-700 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-md">
                         <GoogleLogo />
                         Sign in with Google
                       </button>
 
+                      {/* Facebook Login */}
                       <button onClick={() => handleLogin('facebook')} className="group w-full py-3.5 px-4 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-3 bg-[#1877F2] text-white font-bold text-[0.95rem] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-md hover:bg-[#166fe5]">
                         <span className="bg-white rounded-full p-0.5"><FacebookLogo /></span>
                         Sign in with Facebook
@@ -638,9 +703,9 @@ export const HomePage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#E0F2FE]/40 via-transparent to-[#FDFCF8] dark:from-[#030712]/80 dark:to-[#030712] pointer-events-none z-0"></div>
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#FDFCF8] via-[#FDFCF8]/90 to-transparent dark:from-[#030712] dark:via-[#030712]/90 pointer-events-none z-0"></div>
 
-        <nav className="relative z-[1500] flex items-center justify-between px-4 md:px-10 py-6 max-w-[1400px] mx-auto w-full">
-          <div className="flex flex-col items-start md:items-center gap-1 md:gap-3">
-            <div className="font-serif text-[1.5rem] md:text-[1.8rem] font-bold text-[#0A3A78] dark:text-white tracking-tight cursor-pointer"> 
+        <nav className="relative z-[1500] flex items-start justify-between px-6 md:px-10 py-6 max-w-[1400px] mx-auto w-full">
+          <div className="flex flex-col items-center gap-3">
+            <div className="font-serif text-[1.8rem] font-bold text-[#0A3A78] dark:text-white tracking-tight cursor-pointer"> 
               {t('logo_text')}<span className="text-[#1FA2DE]">360</span>
             </div>
             {/* Language Switcher moved here on large screens, handled in mobile menu otherwise */}
@@ -689,14 +754,14 @@ export const HomePage: React.FC = () => {
             <button type="button" onClick={navigateToSubscribe} className={gradientBtnClass}>{t('subscribe', 'Subscribe')}</button>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-4 xl:gap-5">
+          <div className="flex items-center gap-3 md:gap-4 xl:gap-5">
             {/* Mobile-only language switcher just below or near logo if needed, but typically inside menu is cleaner. Keeping it under logo in column flex above for mobile. */}
             
-            <div className="flex items-center gap-2 md:gap-4">
+            <div className="flex items-center gap-3 md:gap-4">
                 <button 
                   type="button" 
                   onClick={toggleTheme} 
-                  className="p-2 md:p-2.5 rounded-full text-[#0A3A78] dark:text-slate-200 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all backdrop-blur-md border border-white/20 dark:border-slate-700 shadow-sm"
+                  className="p-2.5 rounded-full text-[#0A3A78] dark:text-slate-200 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all backdrop-blur-md border border-white/20 dark:border-slate-700 shadow-sm"
                 >
                   {isDark ? <SunIcon /> : <MoonIcon />}
                 </button>
@@ -730,84 +795,84 @@ export const HomePage: React.FC = () => {
 
         <div className="relative z-20 flex-1 flex flex-col justify-center items-center text-center px-4 max-w-5xl mx-auto mt-4 pb-48 md:pb-64">
           
-          {/* Mobile Language Switcher below logo for easy access */}
-          <div className="lg:hidden mb-6">
+          {/* Mobile Language Switcher below logo for easy access - ADDED MT-2 FOR SPACING */}
+          <div className="lg:hidden mb-6 mt-2">
              <LanguageSwitcher />
           </div>
 
-          <div className="hero-box relative z-10 p-6 md:p-8 rounded-[2rem] md:rounded-[3rem]">
-            <h1 className="font-serif text-[clamp(2.2rem,5.5vw,5rem)] font-normal text-[#0A3A78] dark:text-white leading-[1.2] mb-6 md:mb-8 drop-shadow-lg tracking-tight"> 
+          <div className="hero-box relative z-10 p-8 rounded-[3rem]">
+            <h1 className="font-serif text-[clamp(2.5rem,5.5vw,5rem)] font-normal text-[#0A3A78] dark:text-white leading-[1.2] mb-8 drop-shadow-lg tracking-tight"> 
               {t('home_hero_title')}
             </h1>
-            <p className="text-[1.1rem] md:text-[1.4rem] text-[#2E3A48] dark:text-slate-300 leading-[1.5] md:leading-[1.65] max-w-4xl mx-auto mb-10 md:mb-14 font-medium opacity-90 drop-shadow-sm">
+            <p className="text-[1.15rem] md:text-[1.4rem] text-[#2E3A48] dark:text-slate-300 leading-[1.65] max-w-4xl mx-auto mb-14 font-medium opacity-90 drop-shadow-sm">
                {t('home_hero_subtitle')}
             </p>
-            <button type="button" onClick={() => window.location.hash = '#/onboarding/name'} className="px-12 md:px-16 py-5 md:py-6 text-[1.1rem] md:text-[1.3rem] rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white font-bold shadow-[0_10px_30px_rgba(30,89,255,0.4)] hover:shadow-xl hover:-translate-y-1 hover:brightness-105 transition-all uppercase tracking-wider"> {t('start_checkin')} </button>
+            <button type="button" onClick={() => window.location.hash = '#/onboarding/name'} className="px-16 py-6 text-[1.3rem] rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white font-bold shadow-[0_10px_30px_rgba(30,89,255,0.4)] hover:shadow-xl hover:-translate-y-1 hover:brightness-105 transition-all uppercase tracking-wider"> {t('start_checkin')} </button>
           </div>
 
           {/* FLOATING SHIP - REDESIGNED TO MATCH USER'S MOTORBOAT IMAGE */}
           <div 
             onClick={handleOpenCheckIn}
-            className="absolute -bottom-10 right-[-10px] md:bottom-52 md:-right-12 lg:-right-16 z-[100] cursor-pointer group"
+            className="absolute -bottom-16 right-0 md:bottom-52 md:-right-12 lg:-right-16 z-[100] cursor-pointer group"
           >
             {/* Subtle Floating Animation */}
             <div className="animate-float flex flex-col items-center">
-              <div className="relative w-[140px] md:w-[195px] transition-transform duration-500 group-hover:scale-105 drop-shadow-2xl">
+              <div className="relative w-[180px] md:w-[195px] transition-transform duration-500 group-hover:scale-105 drop-shadow-2xl">
                 
                 {/* 1. Flag Section (Topmost) */}
-                <div className="absolute -top-10 md:-top-12 left-1/2 -translate-x-1/2 z-0">
-                   <div className="w-1 md:w-1 h-10 md:h-12 bg-[#5D4037] rounded-full shadow-sm"></div>
+                <div className="absolute -top-12 md:-top-12 left-1/2 -translate-x-1/2 z-0">
+                   <div className="w-1 md:w-1 h-12 md:h-12 bg-[#5D4037] rounded-full shadow-sm"></div>
                    {/* STREAK RISK LOGIC: Color turns red after 6:00 PM if check-in is not complete */}
-                   <div className={`absolute top-1.5 left-1 w-8 md:w-12 h-5 md:h-7 rounded-sm skew-x-12 animate-pulse shadow-md transition-colors duration-500 ${isStreakAtRisk ? 'bg-[#EF4444] border-r border-red-700/20' : 'bg-[#FFC107] border-r border-yellow-600/20'}`}></div>
+                   <div className={`absolute top-1.5 left-1 w-10 md:w-12 h-6 md:h-7 rounded-sm skew-x-12 animate-pulse shadow-md transition-colors duration-500 ${isStreakAtRisk ? 'bg-[#EF4444] border-r border-red-700/20' : 'bg-[#FFC107] border-r border-yellow-600/20'}`}></div>
                 </div>
 
                 {/* 2. Top Cabin (Tier 1) */}
-                <div className="relative w-[45%] mx-auto h-8 md:h-10 bg-[#F5F5F5] dark:bg-[#172554] rounded-t-[8px] md:rounded-t-[12px] border-b-2 border-slate-200 dark:border-blue-900 flex items-center justify-around px-2 shadow-lg z-10">
+                <div className="relative w-[45%] mx-auto h-10 md:h-10 bg-[#F5F5F5] dark:bg-[#172554] rounded-t-[10px] md:rounded-t-[12px] border-b-2 border-slate-200 dark:border-blue-900 flex items-center justify-around px-2 shadow-lg z-10">
                    {/* Three rounded blue windows */}
                    {[1, 2, 3].map((win) => (
-                     <div key={win} className="w-3.5 h-3.5 md:w-4.5 md:h-5 bg-[#2196F3] rounded-[4px] shadow-inner"></div>
+                     <div key={win} className="w-4 h-4 md:w-4.5 md:h-5 bg-[#2196F3] rounded-[4px] shadow-inner"></div>
                    ))}
                 </div>
 
                 {/* 3. Middle Tier (White Body with "Check Today's" text) */}
-                <div className="relative w-[75%] mx-auto bg-white dark:bg-[#172554] h-10 md:h-12 flex items-center justify-center px-2 md:px-4 shadow-xl border-x border-slate-100 dark:border-blue-900 z-20"
+                <div className="relative w-[75%] mx-auto bg-white dark:bg-[#172554] h-12 md:h-12 flex items-center justify-center px-4 shadow-xl border-x border-slate-100 dark:border-blue-900 z-20"
                      style={{ borderRadius: '4px 4px 0 0' }}>
-                   <div className="flex items-center gap-1 md:gap-1.5">
+                   <div className="flex items-center gap-1.5 md:gap-1.5">
                      {hasCheckedToday ? (
                        <div className="flex items-center gap-2">
-                         <div className="w-5 h-5 md:w-7 md:h-7 bg-emerald-500 rounded-md flex items-center justify-center shadow-sm">
+                         <div className="w-6 h-6 md:w-7 md:h-7 bg-emerald-500 rounded-md flex items-center justify-center shadow-sm">
                            <span className="text-white text-xs md:text-lg">✓</span>
                          </div>
-                         <span className="font-bold text-[#2C3E50] dark:text-white text-[0.7rem] md:text-[0.9rem] whitespace-nowrap tracking-tight">{t('home_today_checked')}</span>
+                         <span className="font-bold text-[#2C3E50] dark:text-white text-[0.8rem] md:text-[0.9rem] whitespace-nowrap tracking-tight">{t('home_today_checked')}</span>
                        </div>
                      ) : (
                        <div className="flex items-center gap-1 md:gap-1.5">
-                         <span className="text-base md:text-xl drop-shadow-sm">🔥</span>
-                         <span className="font-bold text-[#2C3E50] dark:text-white text-[0.75rem] md:text-[0.95rem] whitespace-nowrap tracking-tight font-sans">{t('home_check_todays')}</span>
+                         <span className="text-lg md:text-xl drop-shadow-sm">🔥</span>
+                         <span className="font-bold text-[#2C3E50] dark:text-white text-[0.85rem] md:text-[0.95rem] whitespace-nowrap tracking-tight font-sans">{t('home_check_todays')}</span>
                        </div>
                      )}
                    </div>
                 </div>
 
                 {/* 4. Bottom Hull (Blue Body with "Streak" text) */}
-                <div className="relative w-full bg-gradient-to-b from-[#1E88E5] to-[#1565C0] h-10 md:h-14 shadow-2xl flex items-center justify-center overflow-hidden z-[5] border-t-2 border-[#64B5F6]/30 force-original-gradient"
+                <div className="relative w-full bg-gradient-to-b from-[#1E88E5] to-[#1565C0] h-12 md:h-14 shadow-2xl flex items-center justify-center overflow-hidden z-[5] border-t-2 border-[#64B5F6]/30 force-original-gradient"
                      style={{ borderRadius: '0 0 60% 60% / 0 0 100% 100%' }}>
                    {!hasCheckedToday ? (
-                     <span className="text-white font-bold text-[0.9rem] md:text-[1.2rem] tracking-wide drop-shadow-md">
+                     <span className="text-white font-bold text-[1rem] md:text-[1.2rem] tracking-wide drop-shadow-md">
                        {t('home_streak')}
                      </span>
                    ) : (
-                     <span className="text-white font-bold text-[0.7rem] md:text-[0.9rem] opacity-80 uppercase tracking-widest">
+                     <span className="text-white font-bold text-[0.8rem] md:text-[0.9rem] opacity-80 uppercase tracking-widest">
                        {t('home_excellent')}
                      </span>
                    )}
                    {/* Wake/Ripples effect at bottom */}
-                   <div className="absolute bottom-0 w-full h-3 md:h-4 bg-white/20 blur-md animate-pulse"></div>
+                   <div className="absolute bottom-0 w-full h-4 bg-white/20 blur-md animate-pulse"></div>
                 </div>
 
                 {/* Underwater Shadow & Wake */}
-                <div className="absolute -bottom-3 md:-bottom-4 left-1/2 -translate-x-1/2 w-[90%] h-3 md:h-4 bg-[#B3E5FC]/40 blur-xl rounded-full -z-10 animate-pulse"></div>
-                <div className="absolute -bottom-5 md:-bottom-6 left-1/2 -translate-x-1/2 w-full h-6 md:h-8 bg-blue-900/10 blur-[30px] md:blur-[40px] rounded-full -z-20"></div>
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[90%] h-4 bg-[#B3E5FC]/40 blur-xl rounded-full -z-10 animate-pulse"></div>
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-full h-8 bg-blue-900/10 blur-[40px] rounded-full -z-20"></div>
               </div>
             </div>
           </div>
@@ -815,10 +880,10 @@ export const HomePage: React.FC = () => {
       </div>
 
       {/* SOLUTIONS GRID */}
-      <section className="py-16 md:py-24 px-6 relative dark:bg-[#030712] z-[50]">
+      <section className="py-24 px-6 relative dark:bg-[#030712] z-[50]">
         <div className="max-w-[1280px] mx-auto relative z-10">
-          <h2 className="reveal-on-scroll font-serif text-[2.2rem] md:text-[3.2rem] text-[#0A3A78] dark:text-white mb-10 md:mb-16 text-center tracking-tight"> {t('solutions')} </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+          <h2 className="reveal-on-scroll font-serif text-[2.8rem] md:text-[3.2rem] text-[#0A3A78] dark:text-white mb-16 text-center tracking-tight"> {t('solutions')} </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             <SolutionCard title={t('wellness_seekers')} icon="🧘‍♀️" delay="0ms" />
             <SolutionCard title={t('providers')} subtitle={t('sol_sub_providers')} icon="👩‍⚕️" delay="100ms" />
             <SolutionCard title={t('corporates')} subtitle={t('sol_sub_corporates')} icon="🏢" delay="200ms" />
@@ -828,37 +893,37 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* BOT & PET SECTION */}
-      <section className="py-16 md:py-24 px-6 bg-[#F0F9FF] dark:bg-[#0f172a] relative overflow-hidden">
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 relative z-10">
-          <div className="reveal-on-scroll group bg-white dark:bg-[#111827] rounded-[32px] md:rounded-[40px] p-8 md:p-14 border border-slate-100 dark:border-slate-800 shadow-sm transition-all duration-500">
-            <div className="w-20 h-20 md:w-24 md:h-24 bg-blue-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-4xl md:text-5xl mb-8 md:mb-10"> 🤖 </div>
-            <h3 className="font-serif text-[2rem] md:text-[2.4rem] text-[#0A3A78] dark:text-white mb-4 md:mb-6">{t('virtual_bot')}</h3>
-            <p className="text-[#475569] dark:text-slate-400 text-[1.05rem] md:text-[1.15rem] mb-8 md:mb-12"> {t('virtual_bot_desc')} </p>
-            <button type="button" className="px-8 md:px-10 py-4 md:py-5 rounded-full bg-white dark:bg-slate-800 text-[#1E59FF] dark:text-sky-400 font-bold border-2 border-blue-100 dark:border-slate-700 hover:bg-[#1E59FF] hover:text-white transition-all w-full md:w-auto"> {t('chat_now')} </button>
+      <section className="py-24 px-6 bg-[#F0F9FF] dark:bg-[#0f172a] relative overflow-hidden">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 relative z-10">
+          <div className="reveal-on-scroll group bg-white dark:bg-[#111827] rounded-[40px] p-10 md:p-14 border border-slate-100 dark:border-slate-800 shadow-sm transition-all duration-500">
+            <div className="w-24 h-24 bg-blue-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-5xl mb-10"> 🤖 </div>
+            <h3 className="font-serif text-[2.4rem] text-[#0A3A78] dark:text-white mb-6">{t('virtual_bot')}</h3>
+            <p className="text-[#475569] dark:text-slate-400 text-[1.15rem] mb-12"> {t('virtual_bot_desc')} </p>
+            <button type="button" className="px-10 py-5 rounded-full bg-white dark:bg-slate-800 text-[#1E59FF] dark:text-sky-400 font-bold border-2 border-blue-100 dark:border-slate-700 hover:bg-[#1E59FF] hover:text-white transition-all"> {t('chat_now')} </button>
           </div>
-          <div className="reveal-on-scroll group bg-white dark:bg-[#111827] rounded-[32px] md:rounded-[40px] p-8 md:p-14 border border-slate-100 dark:border-slate-800 shadow-sm transition-all duration-500">
-            <div className="w-20 h-20 md:w-24 md:h-24 bg-amber-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-4xl md:text-5xl mb-8 md:mb-10"> 🐕 </div>
-            <h3 className="font-serif text-[2rem] md:text-[2.4rem] text-[#0A3A78] dark:text-white mb-4 md:mb-6">{t('pet_therapy')}</h3>
-            <p className="text-[#475569] dark:text-slate-400 text-[1.05rem] md:text-[1.15rem] mb-8 md:mb-12"> {t('pet_therapy_desc')} </p>
-            <button type="button" className="px-8 md:px-10 py-4 md:py-5 rounded-full bg-white dark:bg-slate-800 text-[#D97706] dark:text-amber-400 font-bold border-2 border-amber-100 dark:border-slate-700 hover:bg-[#D97706] hover:text-white transition-all w-full md:w-auto"> {t('meet_fluffy')} </button>
+          <div className="reveal-on-scroll group bg-white dark:bg-[#111827] rounded-[40px] p-10 md:p-14 border border-slate-100 dark:border-slate-800 shadow-sm transition-all duration-500">
+            <div className="w-24 h-24 bg-amber-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-5xl mb-10"> 🐕 </div>
+            <h3 className="font-serif text-[2.4rem] text-[#0A3A78] dark:text-white mb-6">{t('pet_therapy')}</h3>
+            <p className="text-[#475569] dark:text-slate-400 text-[1.15rem] mb-12"> {t('pet_therapy_desc')} </p>
+            <button type="button" className="px-10 py-5 rounded-full bg-white dark:bg-slate-800 text-[#D97706] dark:text-amber-400 font-bold border-2 border-amber-100 dark:border-slate-700 hover:bg-[#D97706] hover:text-white transition-all"> {t('meet_fluffy')} </button>
           </div>
         </div>
       </section>
 
       {/* SOUND THERAPY - UPDATED SECTION WITH DIRECT LINK */}
-      <section className="py-16 md:py-24 px-6 bg-gradient-to-b from-[#F0F9FF] to-[#FDFCF8] dark:from-[#0f172a] dark:to-[#030712]">
+      <section className="py-24 px-6 bg-gradient-to-b from-[#F0F9FF] to-[#FDFCF8] dark:from-[#0f172a] dark:to-[#030712]">
         <div className="max-w-[1280px] mx-auto reveal-on-scroll">
-          <div className="bg-white dark:bg-[#111827] rounded-[40px] md:rounded-[50px] p-8 md:p-24 flex flex-col md:flex-row items-center gap-10 md:gap-16 border border-slate-100 dark:border-slate-800 shadow-sm">
-            <div className="flex-1 text-center md:text-left">
-              <span className="inline-block px-5 py-2 md:px-6 rounded-full bg-blue-50 dark:bg-slate-800 text-[#0A3A78] dark:text-sky-300 text-xs font-bold uppercase mb-6 md:mb-10 border border-blue-50 dark:border-slate-700"> {t('footer_featured')} </span>
-              <h2 className="font-serif text-[2.5rem] md:text-[4rem] text-[#0A3A78] dark:text-white leading-[1.1] mb-6 md:mb-8"> {t('sound_therapy')} </h2>
-              <p className="text-[1.1rem] md:text-[1.25rem] text-[#475569] dark:text-slate-400 leading-relaxed mb-8 md:mb-12"> {t('sound_therapy_desc')} </p>
+          <div className="bg-white dark:bg-[#111827] rounded-[50px] p-12 md:p-24 flex flex-col md:flex-row items-center gap-16 border border-slate-100 dark:border-slate-800 shadow-sm">
+            <div className="flex-1">
+              <span className="inline-block px-6 py-2 rounded-full bg-blue-50 dark:bg-slate-800 text-[#0A3A78] dark:text-sky-300 text-xs font-bold uppercase mb-10 border border-blue-50 dark:border-slate-700"> {t('footer_featured')} </span>
+              <h2 className="font-serif text-[3rem] md:text-[4rem] text-[#0A3A78] dark:text-white leading-[1.1] mb-8"> {t('sound_therapy')} </h2>
+              <p className="text-[1.25rem] text-[#475569] dark:text-slate-400 leading-relaxed mb-12"> {t('sound_therapy_desc')} </p>
               
               {/* Main Button Link for Sound Therapy */}
               <button 
                 type="button" 
                 onClick={navigateToSoundTherapy}
-                className="text-[#1E59FF] dark:text-sky-400 font-bold text-lg md:text-xl flex items-center justify-center md:justify-start gap-3 hover:gap-5 transition-all w-full md:w-auto"
+                className="text-[#1E59FF] dark:text-sky-400 font-bold text-xl flex items-center gap-3 hover:gap-5 transition-all"
               > 
                 {t('explore_library')} <span>→</span> 
               </button>
@@ -868,9 +933,9 @@ export const HomePage: React.FC = () => {
               {/* Play Button Link for Sound Therapy */}
               <div 
                 onClick={navigateToSoundTherapy}
-                className="w-40 h-40 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-[#1E59FF] to-[#004BCE] dark:bg-slate-800 dark:bg-none flex items-center justify-center shadow-xl hover:scale-105 transition-transform duration-500 cursor-pointer group"
+                className="w-56 h-56 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-[#1E59FF] to-[#004BCE] dark:bg-slate-800 dark:bg-none flex items-center justify-center shadow-xl hover:scale-105 transition-transform duration-500 cursor-pointer group"
               >
-                <div className="w-0 h-0 border-t-[20px] md:border-t-[25px] border-t-transparent border-l-[35px] md:border-l-[45px] border-l-white border-b-[20px] md:border-b-[25px] border-b-transparent ml-3 md:ml-4 transition-transform group-hover:scale-110"></div>
+                <div className="w-0 h-0 border-t-[25px] border-t-transparent border-l-[45px] border-l-white border-b-[25px] border-b-transparent ml-4 transition-transform group-hover:scale-110"></div>
               </div>
             </div>
           </div>
@@ -878,30 +943,30 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Support Statement */}
-      <section className="py-16 md:py-24 px-6 text-center dark:bg-[#030712]">
+      <section className="py-24 px-6 text-center dark:bg-[#030712]">
         <div className="max-w-4xl mx-auto reveal-on-scroll">
-          <h2 className="font-serif text-[2.2rem] md:text-[2.8rem] text-[#0A3A78] dark:text-white mb-6 md:mb-8">{t('support_statement_title')}</h2>
+          <h2 className="font-serif text-[2.8rem] text-[#0A3A78] dark:text-white mb-8">{t('support_statement_title')}</h2>
           <p className="text-lg text-[#475569] dark:text-slate-400 leading-relaxed">{t('support_statement_desc')}</p>
         </div>
       </section>
 
       {/* MISSING CTA SECTION FROM IMAGE */}
-      <section className="py-20 md:py-32 px-6 text-center relative overflow-hidden bg-white dark:bg-[#030712]">
+      <section className="py-32 px-6 text-center relative overflow-hidden bg-white dark:bg-[#030712]">
         <div className="max-w-4xl mx-auto relative z-10 reveal-on-scroll">
-          <h2 className="font-serif text-[2.8rem] md:text-[4.5rem] text-[#0A3A78] dark:text-white mb-6 leading-[1.1] tracking-tight transition-colors">
+          <h2 className="font-serif text-[3.2rem] md:text-[4.5rem] text-[#0A3A78] dark:text-white mb-6 leading-[1.1] tracking-tight transition-colors">
             {t('final_cta_title')} {t('final_cta_better')}{t('final_cta_title_end')}
           </h2>
-          <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 mb-2 transition-colors">
+          <p className="text-xl text-slate-500 dark:text-slate-400 mb-2 transition-colors">
             {t('join_thousands')}
           </p>
-          <p className="text-lg md:text-xl font-bold text-[#1E59FF] dark:text-sky-400 mb-10 md:mb-12 transition-colors">
+          <p className="text-xl font-bold text-[#1E59FF] dark:text-sky-400 mb-12 transition-colors">
             {t('first_assessment_free')}
           </p>
           <div className="flex flex-col items-center gap-6">
             <button 
               type="button"
               onClick={() => window.location.hash = '#/onboarding/name'} 
-              className="px-12 md:px-16 py-5 md:py-6 rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white text-lg md:text-xl font-bold shadow-[0_15px_35px_-5px_rgba(30,89,255,0.4)] hover:shadow-[0_25px_50px_-10px_rgba(30,89,255,0.5)] hover:-translate-y-1 hover:brightness-105 transition-all duration-300 ring-4 ring-blue-500/10"
+              className="px-16 py-6 rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white text-xl font-bold shadow-[0_15px_35px_-5px_rgba(30,89,255,0.4)] hover:shadow-[0_25px_50px_-10px_rgba(30,89,255,0.5)] hover:-translate-y-1 hover:brightness-105 transition-all duration-300 ring-4 ring-blue-500/10"
             >
               {t('begin_journey')}
             </button>
@@ -912,32 +977,32 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <footer className="bg-[#F8FAFC] dark:bg-[#0f172a] pt-16 md:pt-24 pb-12 px-6 border-t border-slate-100 dark:border-slate-800 transition-colors">
+      <footer className="bg-[#F8FAFC] dark:bg-[#0f172a] pt-24 pb-12 px-6 border-t border-slate-100 dark:border-slate-800 transition-colors">
         <div className="max-w-[1280px] mx-auto text-center">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-left mb-16 md:mb-20">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-left mb-20">
             <div>
-              <h4 className="font-bold text-[#0A3A78] dark:text-white mb-6 md:mb-8 text-lg">Manas360</h4>
+              <h4 className="font-bold text-[#0A3A78] dark:text-white mb-8 text-lg">Manas360</h4>
               <ul className="space-y-4 text-slate-500 dark:text-slate-400 font-medium">
                 <li className="hover:text-[#1E59FF] cursor-pointer transition-colors">{t('about_us')}</li>
                 <li className="hover:text-[#1E59FF] cursor-pointer transition-colors">Careers</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-[#0A3A78] dark:text-white mb-6 md:mb-8 text-lg">{t('solutions')}</h4>
+              <h4 className="font-bold text-[#0A3A78] dark:text-white mb-8 text-lg">{t('solutions')}</h4>
               <ul className="space-y-4 text-slate-500 dark:text-slate-400 font-medium">
                 <li className="hover:text-[#1E59FF] cursor-pointer transition-colors">For Individuals</li>
                 <li className="hover:text-[#1E59FF] cursor-pointer transition-colors">For Business</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-[#0A3A78] dark:text-white mb-6 md:mb-8 text-lg">{t('support')}</h4>
+              <h4 className="font-bold text-[#0A3A78] dark:text-white mb-8 text-lg">{t('support')}</h4>
               <ul className="space-y-4 text-slate-500 dark:text-slate-400 font-medium">
                 <li className="hover:text-[#1E59FF] cursor-pointer transition-colors">Help Center</li>
                 <li className="hover:text-[#1E59FF] cursor-pointer transition-colors">Contact Us</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-[#0A3A78] dark:text-white mb-6 md:mb-8 text-lg">{t('legal')}</h4>
+              <h4 className="font-bold text-[#0A3A78] dark:text-white mb-8 text-lg">{t('legal')}</h4>
               <ul className="space-y-4 text-slate-500 dark:text-slate-400 font-medium">
                 <li className="hover:text-[#1E59FF] cursor-pointer transition-colors">{t('footer_terms')}</li>
                 <li className="hover:text-[#1E59FF] cursor-pointer transition-colors">{t('footer_privacy')}</li>
@@ -950,7 +1015,7 @@ export const HomePage: React.FC = () => {
               </ul>
             </div>
           </div>
-          <div className="py-8 md:py-10 border-t border-slate-200 dark:border-slate-800">
+          <div className="py-10 border-t border-slate-200 dark:border-slate-800">
             <p className="text-slate-500 dark:text-slate-500 text-sm max-w-2xl mx-auto leading-relaxed"> If you're experiencing a life-threatening emergency or crisis, please call 911 or the National Suicide Prevention Lifeline at 988. </p>
           </div>
           <div className="text-slate-400 dark:text-slate-600 text-xs font-bold tracking-widest"> © 2024 Manas360 Wellness. All rights reserved. </div>
@@ -959,100 +1024,3 @@ export const HomePage: React.FC = () => {
     </div>
   );
 };
-
-interface MobileMenuItemProps {
-  icon: string;
-  label: string;
-  onClick?: () => void;
-}
-
-const MobileMenuItem: React.FC<MobileMenuItemProps> = ({ icon, label, onClick }) => (
-  <button 
-    type="button"
-    onClick={onClick}
-    className="flex items-center gap-3 p-3 w-full text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-  >
-    <span className="text-xl">{icon}</span>
-    <span className="text-[1.05rem] font-medium text-slate-700 dark:text-slate-200">{label}</span>
-  </button>
-);
-
-interface DropdownButtonProps {
-  title: string;
-  children: React.ReactNode;
-}
-
-const DropdownButton: React.FC<DropdownButtonProps> = ({ title, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  return (
-    <div 
-      className="relative group"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      <button 
-        type="button"
-        className={`flex items-center gap-1 py-2 px-3 rounded-full transition-all ${isOpen ? 'bg-blue-50 dark:bg-slate-800 text-[#0A3A78] dark:text-white' : 'hover:bg-slate-50/50 dark:hover:bg-slate-800/50'}`}
-        aria-expanded={isOpen}
-      >
-        {title}
-        <svg 
-          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-        >
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </button>
-      
-      <div 
-        className={`
-          absolute top-full left-0 pt-2 w-auto min-w-[240px] z-[2000]
-          transition-all duration-200 origin-top-left
-          ${isOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}
-        `}
-      >
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-2 shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-interface DropdownItemProps {
-  icon: string;
-  label: string;
-  onClick?: () => void;
-}
-
-const DropdownItem: React.FC<DropdownItemProps> = ({ icon, label, onClick }) => (
-  <button 
-    type="button"
-    onClick={onClick}
-    className="flex items-center gap-3 px-4 py-3 w-full text-left text-[0.95rem] font-medium text-[#2E3A48] dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-[#0A3A78] dark:hover:text-white rounded-xl transition-all"
-  >
-    <span className="text-xl">{icon}</span>
-    <span>{label}</span>
-  </button>
-);
-
-interface SolutionCardProps {
-  title: string;
-  subtitle?: string;
-  icon: string;
-  delay: string;
-}
-
-const SolutionCard: React.FC<SolutionCardProps> = ({ title, subtitle, icon, delay }) => (
-  <div 
-    className="reveal-on-scroll group p-6 md:p-8 rounded-[24px] md:rounded-[32px] bg-white dark:bg-[#111827] border border-slate-100 dark:border-slate-800 shadow-[0_10px_30px_rgba(0,0,0,0.04)] dark:shadow-none hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] dark:hover:bg-slate-800 hover:-translate-y-2 transition-all duration-500"
-    style={{ transitionDelay: delay }}
-  >
-    <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-[#F0F9FF] dark:bg-slate-800 flex items-center justify-center text-3xl mb-5 md:mb-6 group-hover:scale-110 transition-transform duration-500 border border-blue-50 dark:border-slate-700">
-      {icon}
-    </div>
-    <h3 className="font-serif text-xl md:text-2xl text-[#0A3A78] dark:text-white mb-2 md:mb-3 font-bold">{title}</h3>
-    {subtitle && <p className="text-[#64748B] dark:text-slate-400 leading-relaxed text-[0.85rem] md:text-[0.95rem]">{subtitle}</p>}
-  </div>
-);

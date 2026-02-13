@@ -36,6 +36,11 @@ import { ARPlansPage } from './components/ARPlansPage';
 import { ARThemePlayer } from './components/ARThemePlayer';
 import { ARRealRoomPlayer } from './components/ARRealRoomplayer';
 import { FreeToolsPage } from './components/FreeToolsPage';
+import { QuickLaunchDock } from './components/QuickLaunchDock';
+import { LoginModal } from './components/LoginModal';
+import { RoleSelection } from './components/RoleSelection';
+import { ProfileSetup } from './components/ProfileSetup';
+import { TherapistRegistration } from './components/TherapistRegistration';
 import { Session } from './types';
 import { storageService } from './utils/storageService';
 
@@ -71,7 +76,10 @@ export type ViewState =
   | 'ar-billing'
   | 'ar-player'
   | 'ar-real-room'
-  | 'free-tools';
+  | 'free-tools'
+  | 'role-selection'
+  | 'profile-setup'
+  | 'therapist-registration';
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
@@ -85,6 +93,9 @@ const App: React.FC = () => {
   const [editingSession, setEditingSession] = useState<Session | undefined>(undefined);
   const [activeSession, setActiveSession] = useState<Session | undefined>(undefined);
   const [viewingHistoryRecord, setViewingHistoryRecord] = useState<any>(null);
+
+  // Landing Page Login State
+  const [showLandingLogin, setShowLandingLogin] = useState(false);
 
   // Helper to get base path with current language
   const getPath = (view: string) => `#/${i18n.language}/${view}`;
@@ -185,6 +196,9 @@ const App: React.FC = () => {
       else if (viewPath === 'developer-api-resources') setCurrentView('developer-api-resources');
       else if (viewPath === 'cancellation-refund-policy') setCurrentView('cancellation-refund-policy');
       else if (viewPath === 'free-tools') setCurrentView('free-tools');
+      else if (viewPath === 'role-selection') setCurrentView('role-selection');
+      else if (viewPath === 'profile-setup') setCurrentView('profile-setup');
+      else if (viewPath === 'therapist-registration') setCurrentView('therapist-registration');
       
       else setCurrentView('landing');
     };
@@ -221,7 +235,10 @@ const App: React.FC = () => {
     window.location.hash = getPath(view);
   };
 
-  const handleStartAssessment = () => navigate('assessment');
+  const handleStartAssessment = () => {
+    // Open Login Modal to start the journey instead of going directly to assessment
+    setShowLandingLogin(true);
+  };
 
   const handleAssessmentSubmit = (data: any, isCritical: boolean) => {
     setAssessmentData(data);
@@ -292,9 +309,9 @@ const App: React.FC = () => {
         onClick={handleFloatingCloudClick}
         style={{ animationDuration: '6s' }}
       >
-        <div className="relative w-[160px] md:w-[190px] lg:w-[370px] hover:scale-105 transition-transform duration-500 filter drop-shadow-2xl">
+        <div className="relative w-[130px] md:w-[170px] lg:w-[370px] hover:scale-105 transition-transform duration-500 filter drop-shadow-2xl">
            <img 
-             src="https://pngimg.com/d/cloud_PNG16.png" 
+             src="/images/floating-cloud.png" 
              alt="Start Free" 
              loading="eager"
              className="w-full h-auto object-contain opacity-100 brightness-110 contrast-125 relative z-10"
@@ -324,38 +341,41 @@ const App: React.FC = () => {
         </div>
       </div>
 
-        {currentView === 'landing' && (
-          <>
-            <div 
-              className="landing relative w-full transition-colors duration-500 overflow-hidden"
-              style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1505118380757-91f5f5632de0?q=80&w=2560&auto=format&fit=crop")',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundAttachment: 'scroll',
-              }}
-            >
-              <div className="absolute inset-0 z-0 pointer-events-none transition-all duration-700 backdrop-brightness-100 dark:backdrop-brightness-[0.3]"></div>
-              <div className="absolute inset-0 bg-[#E0F2FE]/30 dark:bg-slate-950/70 mix-blend-overlay dark:mix-blend-normal pointer-events-none z-[1] transition-all duration-700"></div>
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFBEB]/40 via-[#E0F2FE]/40 to-[#FDFCF8] dark:from-slate-950/90 dark:via-slate-900/50 dark:to-[#030712] pointer-events-none z-[2] transition-all duration-500"></div>
-              <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#FDFCF8] via-[#FDFCF8]/80 to-transparent dark:from-[#030712] dark:via-[#030712]/95 transition-all duration-500 z-10"></div>
-              <BackgroundParticles />
+      {currentView === 'landing' && (
+        <>
+          <QuickLaunchDock />
+          <LoginModal isOpen={showLandingLogin} onClose={() => setShowLandingLogin(false)} />
+          
+          <div 
+            className="landing relative w-full transition-colors duration-500 overflow-hidden"
+            style={{
+              backgroundImage: 'url("https://images.unsplash.com/photo-1505118380757-91f5f5632de0?q=80&w=2560&auto=format&fit=crop")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundAttachment: 'scroll',
+            }}
+          >
+            <div className="absolute inset-0 z-0 pointer-events-none transition-all duration-700 backdrop-brightness-100 dark:backdrop-brightness-[0.3]"></div>
+            <div className="absolute inset-0 bg-[#E0F2FE]/30 dark:bg-slate-950/70 mix-blend-overlay dark:mix-blend-normal pointer-events-none z-[1] transition-all duration-700"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#FFFBEB]/40 via-[#E0F2FE]/40 to-[#FDFCF8] dark:from-slate-950/90 dark:via-slate-900/50 dark:to-[#030712] pointer-events-none z-[2] transition-all duration-500"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#FDFCF8] via-[#FDFCF8]/80 to-transparent dark:from-[#030712] dark:via-[#030712]/95 transition-all duration-500 z-10"></div>
+            <BackgroundParticles />
             
-              <div className="landing-content relative z-20 w-full max-w-[1280px] mx-auto px-6 py-8 pb-32 md:pb-48">
-                <Header />
-                <Hero onStartClick={handleStartAssessment} />
-              </div>
+            <div className="landing-content relative z-20 w-full max-w-[1400px] mx-auto px-4 py-4 pb-32 md:pb-48">
+              <Header onLoginClick={() => setShowLandingLogin(true)} />
+              <Hero onStartClick={handleStartAssessment} />
             </div>
+          </div>
 
-            <main className="relative z-30 flex flex-col gap-32 w-full max-w-[1280px] mx-auto px-6 -mt-24 pb-24">
-              <div className="reveal"><TrustBar /></div>
-              <div className="reveal"><HowItWorks /></div>
-              <div className="reveal"><Testimonial /></div>
-              <FinalCTA onStartClick={handleStartAssessment} />
-            </main>
-            <CrisisBanner />
-          </>
-        )}
+          <main className="relative z-30 flex flex-col gap-32 w-full max-w-[1280px] mx-auto px-6 -mt-24 pb-24">
+            <div className="reveal"><TrustBar /></div>
+            <div className="reveal"><HowItWorks /></div>
+            <div className="reveal"><Testimonial /></div>
+            <FinalCTA onStartClick={handleStartAssessment} />
+          </main>
+          <CrisisBanner />
+        </>
+      )}
 
         {currentView === 'assessment' && <Assessment onSubmit={handleAssessmentSubmit} />}
         {currentView === 'results' && <ResultsPage data={assessmentData} />}
@@ -388,6 +408,9 @@ const App: React.FC = () => {
         {currentView === 'ar-player' && <ARThemePlayer themeId={currentARThemeId} />}
         {currentView === 'ar-real-room' && <ARRealRoomPlayer />}
         {currentView === 'free-tools' && <FreeToolsPage />}
+        {currentView === 'role-selection' && <RoleSelection />}
+        {currentView === 'profile-setup' && <ProfileSetup />}
+        {currentView === 'therapist-registration' && <TherapistRegistration />}
       </div>
     );
   };
