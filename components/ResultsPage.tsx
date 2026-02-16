@@ -47,49 +47,49 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({ data }) => {
 
   // Logic for Primary Condition based on IDs (Worry/Racing thoughts/Restless)
   const anxietyIndicators = ['symptom_3', 'symptom_4', 'symptom_11'];
-  const primaryCondition = data.symptoms.some(s => anxietyIndicators.includes(s)) 
-    ? t('condition_anxiety') 
+  const primaryCondition = data.symptoms.some(s => anxietyIndicators.includes(s))
+    ? t('condition_anxiety')
     : t('condition_depression');
 
   return (
     <div className="min-h-screen bg-[#F0F9FF] dark:bg-[#030712] py-12 px-6 animate-fade-in flex flex-col items-center transition-colors duration-500 relative">
-       
-       {/* Absolute Top Right Icon - Adjusted for mobile */}
-       <div className="absolute top-2 right-4 md:top-6 md:right-8 select-none pointer-events-none drop-shadow-sm z-50 text-black dark:text-white">
-         <span className="text-[26px] md:text-[28px] leading-none">🧿</span>
-       </div>
 
-       {/* Header */}
-       <div className="w-full max-w-5xl mb-12 flex items-center relative mt-8 md:mt-0">
-        <button 
-            onClick={handleBack}
-            className="flex items-center gap-2 text-[#0A3A78] dark:text-sky-400 font-bold text-lg hover:opacity-75 transition-opacity z-10"
+      {/* Absolute Top Right Icon - Adjusted for mobile */}
+      <div className="absolute top-2 right-4 md:top-6 md:right-8 select-none pointer-events-none drop-shadow-sm z-50 text-black dark:text-white">
+        <span className="text-[26px] md:text-[28px] leading-none">🧿</span>
+      </div>
+
+      {/* Header */}
+      <div className="w-full max-w-5xl mb-12 flex items-center relative mt-8 md:mt-0">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-[#0A3A78] dark:text-sky-400 font-bold text-lg hover:opacity-75 transition-opacity z-10"
         >
-            <span className="text-2xl">←</span> Back
+          <span className="text-2xl">←</span> Back
         </button>
-        
+
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <h1 className="font-serif text-[#0A3A78] dark:text-white font-bold text-xl md:text-2xl tracking-widest uppercase text-center">
-                Assessment Results
-            </h1>
+          <h1 className="font-serif text-[#0A3A78] dark:text-white font-bold text-xl md:text-2xl tracking-widest uppercase text-center">
+            Assessment Results
+          </h1>
         </div>
       </div>
 
       <div className="w-full max-w-2xl bg-white dark:bg-[#111827] rounded-[40px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-none border border-slate-100 dark:border-slate-800 p-8 md:p-12 text-center transition-colors duration-500">
-        
+
         <div className="text-[5rem] mb-4 animate-float filter dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">{emoji}</div>
-        
+
         <h1 className="font-serif text-[2.5rem] text-wellness-slate dark:text-white mb-2 transition-colors">
           {severity} {t('distress_label')}
         </h1>
-        
+
         <p className={`text-lg font-medium mb-8 ${color} transition-colors`}>
           {message}
         </p>
 
         <div className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 text-left mb-12 transition-colors border border-transparent dark:border-slate-800">
           <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">{t('summary_analysis')}</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t('primary_concern')}</p>
@@ -118,10 +118,10 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({ data }) => {
         </div>
 
         <div className="flex flex-col gap-4 w-full">
-          
+
           {/* Primary Action: See Matched Therapists */}
-          <button 
-            onClick={() => window.location.hash = '#/subscribe/patients'} 
+          <button
+            onClick={() => window.location.hash = '#/therapist-matching/'}
             className="
               w-full py-4 px-6
               bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white
@@ -136,8 +136,8 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({ data }) => {
 
           <div className="flex flex-col md:flex-row gap-4 w-full">
             {/* Secondary Action: AI Chat */}
-            <button 
-              onClick={() => window.location.hash = '#/free-tools'}
+            <button
+              onClick={() => window.location.hash = '#/meera-chat'}
               className="
                 group flex-1 py-4 px-5
                 bg-white dark:bg-slate-800 border-2 border-[#1FA2DE] dark:border-sky-500 text-[#1FA2DE] dark:text-sky-400
@@ -150,9 +150,9 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({ data }) => {
             >
               <span>🤖</span> Try Free AI Chat First
             </button>
-            
+
             {/* Tertiary: Full Assessment */}
-            <button 
+            <button
               onClick={() => window.location.hash = '#/full-assessment'}
               className="
                 group flex-1 py-4 px-5
@@ -167,9 +167,9 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({ data }) => {
               <span>🩺</span> {t('full_assessment')}
             </button>
           </div>
-          
-          <button 
-            onClick={() => window.location.hash = '#/home'} 
+
+          <button
+            onClick={() => window.location.hash = '#/home'}
             className="
               w-full py-3
               text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300

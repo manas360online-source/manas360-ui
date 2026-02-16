@@ -52,7 +52,7 @@ export const QuickLaunchDock: React.FC = () => {
 
   const launchFeature = (feature: string) => {
     closePanel();
-    
+
     // Simple visual feedback
     const btn = document.querySelector(`.dock-item[data-feature="${feature}"]`) as HTMLElement;
     if (btn) {
@@ -63,10 +63,14 @@ export const QuickLaunchDock: React.FC = () => {
     }
 
     // Routing Logic
-    switch(feature) {
+    switch (feature) {
       case 'buddy':
       case 'vent':
       case 'meera':
+        window.location.hash = '#/meera-chat';
+        break;
+      case 'buddy':
+      case 'vent':
         // These would typically open the chat interface or route to home where bot is
         window.location.hash = '#/home';
         break;
@@ -88,7 +92,7 @@ export const QuickLaunchDock: React.FC = () => {
   // Helper to adjust panel position on Desktop
   const getPanelStyle = (feature: string) => {
     if (window.innerWidth <= 768) return {}; // CSS handles mobile positioning
-    
+
     // Find the item
     const item = document.querySelector(`.dock-item[data-feature="${feature}"]`);
     if (!item) return {};
@@ -96,10 +100,10 @@ export const QuickLaunchDock: React.FC = () => {
     const rect = item.getBoundingClientRect();
     const panelHeight = 380;
     let top = rect.top + rect.height / 2 - panelHeight / 2;
-    
+
     // Boundary check
     top = Math.max(20, Math.min(top, window.innerHeight - panelHeight - 20));
-    
+
     return {
       top: `${top}px`,
       transform: 'translateX(0)' // Reset any existing transform from class
@@ -109,8 +113,8 @@ export const QuickLaunchDock: React.FC = () => {
   return (
     <div className="quick-launch-wrapper">
       {/* PANEL OVERLAY */}
-      <div 
-        className={`panel-overlay ${activePanel ? 'active' : ''}`} 
+      <div
+        className={`panel-overlay ${activePanel ? 'active' : ''}`}
         onClick={closePanel}
       ></div>
 
@@ -123,10 +127,10 @@ export const QuickLaunchDock: React.FC = () => {
 
       {/* THE DOCK */}
       <div className={`dock ${isCollapsed ? 'collapsed' : ''}`} id="dock">
-        
-        <div 
-          className={`dock-item buddy ${activePanel === 'buddy' ? 'active-item' : ''}`} 
-          onClick={() => openPanel('buddy')} 
+
+        <div
+          className={`dock-item buddy ${activePanel === 'buddy' ? 'active-item' : ''}`}
+          onClick={() => openPanel('buddy')}
           data-feature="buddy"
         >
           <span className="badge" style={{ display: showBadge ? 'block' : 'none' }}></span>
@@ -137,9 +141,9 @@ export const QuickLaunchDock: React.FC = () => {
           </div>
         </div>
 
-        <div 
-          className={`dock-item voice ${activePanel === 'voice' ? 'active-item' : ''}`} 
-          onClick={() => openPanel('voice')} 
+        <div
+          className={`dock-item voice ${activePanel === 'voice' ? 'active-item' : ''}`}
+          onClick={() => openPanel('voice')}
           data-feature="voice"
         >
           🎙️
@@ -149,9 +153,9 @@ export const QuickLaunchDock: React.FC = () => {
           </div>
         </div>
 
-        <div 
-          className={`dock-item assess ${activePanel === 'assess' ? 'active-item' : ''}`} 
-          onClick={() => openPanel('assess')} 
+        <div
+          className={`dock-item assess ${activePanel === 'assess' ? 'active-item' : ''}`}
+          onClick={() => openPanel('assess')}
           data-feature="assess"
         >
           📝
@@ -163,9 +167,9 @@ export const QuickLaunchDock: React.FC = () => {
 
         <div className="dock-sep"></div>
 
-        <div 
-          className={`dock-item meera ${activePanel === 'meera' ? 'active-item' : ''}`} 
-          onClick={() => openPanel('meera')} 
+        <div
+          className={`dock-item meera ${activePanel === 'meera' ? 'active-item' : ''}`}
+          onClick={() => openPanel('meera')}
           data-feature="meera"
         >
           👩‍⚕️
@@ -175,9 +179,9 @@ export const QuickLaunchDock: React.FC = () => {
           </div>
         </div>
 
-        <div 
-          className={`dock-item vent ${activePanel === 'vent' ? 'active-item' : ''}`} 
-          onClick={() => openPanel('vent')} 
+        <div
+          className={`dock-item vent ${activePanel === 'vent' ? 'active-item' : ''}`}
+          onClick={() => openPanel('vent')}
           data-feature="vent"
         >
           😤
@@ -189,9 +193,9 @@ export const QuickLaunchDock: React.FC = () => {
 
         <div className="dock-sep"></div>
 
-        <div 
-          className={`dock-item garden ${activePanel === 'garden' ? 'active-item' : ''}`} 
-          onClick={() => openPanel('garden')} 
+        <div
+          className={`dock-item garden ${activePanel === 'garden' ? 'active-item' : ''}`}
+          onClick={() => openPanel('garden')}
           data-feature="garden"
         >
           🦋
@@ -201,9 +205,9 @@ export const QuickLaunchDock: React.FC = () => {
           </div>
         </div>
 
-        <div 
-          className={`dock-item sound ${activePanel === 'sound' ? 'active-item' : ''}`} 
-          onClick={() => openPanel('sound')} 
+        <div
+          className={`dock-item sound ${activePanel === 'sound' ? 'active-item' : ''}`}
+          onClick={() => openPanel('sound')}
           data-feature="sound"
         >
           🎵
@@ -219,9 +223,9 @@ export const QuickLaunchDock: React.FC = () => {
       </div>
 
       {/* FEATURE PANELS */}
-      
+
       {/* Anytime Buddy */}
-      <div 
+      <div
         className={`feature-panel panel-buddy ${activePanel === 'buddy' ? 'active' : ''}`}
         style={activePanel === 'buddy' ? getPanelStyle('buddy') : {}}
       >
@@ -245,7 +249,7 @@ export const QuickLaunchDock: React.FC = () => {
       </div>
 
       {/* Voice Assessment */}
-      <div 
+      <div
         className={`feature-panel panel-voice ${activePanel === 'voice' ? 'active' : ''}`}
         style={activePanel === 'voice' ? getPanelStyle('voice') : {}}
       >
@@ -268,7 +272,7 @@ export const QuickLaunchDock: React.FC = () => {
       </div>
 
       {/* Text Assessment */}
-      <div 
+      <div
         className={`feature-panel panel-assess ${activePanel === 'assess' ? 'active' : ''}`}
         style={activePanel === 'assess' ? getPanelStyle('assess') : {}}
       >
@@ -291,7 +295,7 @@ export const QuickLaunchDock: React.FC = () => {
       </div>
 
       {/* Dr Meera */}
-      <div 
+      <div
         className={`feature-panel panel-meera ${activePanel === 'meera' ? 'active' : ''}`}
         style={activePanel === 'meera' ? getPanelStyle('meera') : {}}
       >
@@ -314,7 +318,7 @@ export const QuickLaunchDock: React.FC = () => {
       </div>
 
       {/* VentBuddy */}
-      <div 
+      <div
         className={`feature-panel panel-vent ${activePanel === 'vent' ? 'active' : ''}`}
         style={activePanel === 'vent' ? getPanelStyle('vent') : {}}
       >
@@ -337,7 +341,7 @@ export const QuickLaunchDock: React.FC = () => {
       </div>
 
       {/* AR Garden */}
-      <div 
+      <div
         className={`feature-panel panel-garden ${activePanel === 'garden' ? 'active' : ''}`}
         style={activePanel === 'garden' ? getPanelStyle('garden') : {}}
       >
@@ -360,7 +364,7 @@ export const QuickLaunchDock: React.FC = () => {
       </div>
 
       {/* Sound Therapy */}
-      <div 
+      <div
         className={`feature-panel panel-sound ${activePanel === 'sound' ? 'active' : ''}`}
         style={activePanel === 'sound' ? getPanelStyle('sound') : {}}
       >
