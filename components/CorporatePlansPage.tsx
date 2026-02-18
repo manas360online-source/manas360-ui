@@ -1,10 +1,24 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { storageService } from '../utils/storageService';
 import { SubscriptionSuccessModal } from './SubscriptionSuccessModal';
 
 export const CorporatePlansPage: React.FC = () => {
   const [successData, setSuccessData] = useState<{ category: string; planName: string; price: string } | null>(null);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    const queryString = hash.split('?')[1] || '';
+    const params = new URLSearchParams(queryString);
+
+    if (params.get('success') === 'true') {
+      const planName = params.get('planName');
+      const price = params.get('price');
+      if (planName && price) {
+        setSuccessData({ category: 'Corporates', planName, price });
+      }
+    }
+  }, []);
 
   const handleBack = () => {
     window.location.hash = '#/subscribe';
@@ -15,7 +29,9 @@ export const CorporatePlansPage: React.FC = () => {
   };
 
   const handleSubscribe = (planName: string, price: string) => {
-    setSuccessData({ category: 'Corporates', planName, price });
+    const currentPath = window.location.hash.split('?')[0];
+    const returnUrl = `${currentPath}?planName=${encodeURIComponent(planName)}&price=${encodeURIComponent(price)}`;
+    window.location.hash = `#/payment-landing?planName=${encodeURIComponent(planName)}&price=${encodeURIComponent(price)}&returnUrl=${encodeURIComponent(returnUrl)}`;
   };
 
   const onConfirmOk = () => {
@@ -35,15 +51,15 @@ export const CorporatePlansPage: React.FC = () => {
     <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-x-hidden dark:bg-[#030712]">
       {/* Success Modal */}
       {successData && (
-        <SubscriptionSuccessModal 
-          category={successData.category} 
-          planName={successData.planName} 
-          onOk={onConfirmOk} 
+        <SubscriptionSuccessModal
+          category={successData.category}
+          planName={successData.planName}
+          onOk={onConfirmOk}
         />
       )}
 
       {/* Background Image */}
-      <div 
+      <div
         className="absolute inset-0 z-0 bg-[#EBF5FF] dark:bg-[#030712]"
         style={{
           backgroundImage: 'url("https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=2560&auto=format&fit=crop")',
@@ -55,20 +71,20 @@ export const CorporatePlansPage: React.FC = () => {
 
       {/* Glass Container */}
       <div className="relative z-10 w-full max-w-[1250px] bg-white/80 dark:bg-[#0A0F1D]/90 backdrop-blur-3xl rounded-[32px] sm:rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] border border-white/60 dark:border-slate-800/80 flex flex-col transition-all duration-500 my-8 lg:my-0">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center px-6 md:px-10 py-4 md:py-4 border-b border-slate-200/50 dark:border-slate-800/50 gap-4">
           <button onClick={handleBack} className="flex items-center gap-2 text-[#1E59FF] dark:text-white font-bold text-[0.9rem] sm:text-[1rem] hover:opacity-75 transition-all self-start sm:self-center">
             <span className="text-xl">←</span> Back
           </button>
-          
+
           <h1 className="font-serif text-sm sm:text-base md:text-xl font-bold text-[#0A3A78] dark:text-white tracking-widest uppercase text-center px-4 leading-tight">
             CORPORATES / HOSPITALS / EDUCATION INSTITUTES
           </h1>
 
           <div className="flex items-center gap-4 self-end sm:self-center">
             <button onClick={handleBilling} className="px-5 py-2 rounded-xl border border-[#0A3A78]/10 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-[#0A3A78] dark:text-sky-300 font-bold text-[0.65rem] sm:text-[0.7rem] flex items-center gap-2 hover:bg-white dark:hover:bg-slate-700 transition-all whitespace-nowrap">
-               <span className="text-base">📋</span> Billing History
+              <span className="text-base">📋</span> Billing History
             </button>
 
             {/* Nazar Bottu / Evil Eye Icon */}
@@ -80,10 +96,10 @@ export const CorporatePlansPage: React.FC = () => {
 
         {/* Content - 2 Column Layout */}
         <div className="p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch overflow-y-auto max-h-[80vh] lg:max-h-[85vh] lg:overflow-y-visible">
-          
+
           {/* LEFT COLUMN */}
           <div className="flex flex-col gap-5">
-            <PlanOptionCard 
+            <PlanOptionCard
               title="Corporates – Mid Size"
               items={[
                 "Rs 399/employee/year",
@@ -98,7 +114,7 @@ export const CorporatePlansPage: React.FC = () => {
               onSubscribe={() => handleSubscribe('Corporates – Mid Size', '₹399/emp/yr')}
             />
 
-            <PlanOptionCard 
+            <PlanOptionCard
               title="Education Institutes"
               items={[
                 "Rs 99/student/year",
@@ -116,7 +132,7 @@ export const CorporatePlansPage: React.FC = () => {
 
           {/* RIGHT COLUMN */}
           <div className="flex flex-col gap-5">
-            <PlanOptionCard 
+            <PlanOptionCard
               title="Corporates / Speciality – Large"
               items={[
                 "Rs 499/employee/year",
@@ -132,7 +148,7 @@ export const CorporatePlansPage: React.FC = () => {
               onSubscribe={() => handleSubscribe('Corporates – Large', '₹499/emp/yr')}
             />
 
-            <PlanOptionCard 
+            <PlanOptionCard
               title="Corporates – Executive"
               items={[
                 "Rs 999/employee/year",
@@ -168,7 +184,7 @@ const PlanOptionCard: React.FC<PlanOptionCardProps> = ({ title, items, pricing, 
     <h3 className="font-serif text-[1.1rem] sm:text-[1.3rem] md:text-[1.4rem] font-bold text-[#0A3A78] dark:text-white mb-3 text-center leading-tight">
       {title}
     </h3>
-    
+
     <div className="flex-grow">
       <ul className="space-y-1 mb-5">
         {items.map((item, i) => (

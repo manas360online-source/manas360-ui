@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, Award, CheckCircle, Clock, ArrowRight, Loader2, RefreshCcw, TestTube, Download, AlertCircle } from 'lucide-react';
+import { BookOpen, Award, CheckCircle, Clock, ArrowRight, Loader2, RefreshCcw, TestTube, Download, AlertCircle, Trash2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEO } from '../components/CertificationSEO';
 import { useEnrollmentStore } from '../store/CertificationEnrollmentStore';
@@ -8,7 +8,7 @@ import { Enrollment } from '../CertificationTypes';
 import { CertificatePreviewModal } from '../components/CertificationPreviewModal';
 
 export const MyCertificationsPage: React.FC = () => {
-    const { enrollments, payInstallment, updateProgress } = useEnrollmentStore();
+    const { enrollments, payInstallment, updateProgress, clearEnrollments } = useEnrollmentStore();
     const navigate = useNavigate();
     const [processingId, setProcessingId] = useState<string | null>(null);
     const [certToDownload, setCertToDownload] = useState<Enrollment | null>(null);
@@ -19,6 +19,13 @@ export const MyCertificationsPage: React.FC = () => {
         payInstallment(enrollment.id);
         setProcessingId(null);
         alert("Payment Successful! Installment recorded.");
+    };
+
+    const handleReset = () => {
+        if (window.confirm("Are you sure you want to clear all certification data? This action cannot be undone.")) {
+            clearEnrollments();
+            alert("All certification data has been cleared.");
+        }
     };
 
     const getStatusBadge = (status: string) => {
@@ -52,6 +59,14 @@ export const MyCertificationsPage: React.FC = () => {
                         <h1 className="text-2xl md:text-3xl font-serif font-bold text-slate-900 mb-2">My Certifications</h1>
                         <p className="text-slate-600 text-sm md:text-base">Track your progress, installments, and achievements.</p>
                     </div>
+                    {enrollments.length > 0 && (
+                        <button
+                            onClick={handleReset}
+                            className="bg-white border border-red-200 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-50 transition flex items-center gap-2"
+                        >
+                            <Trash2 size={16} /> Reset All Data
+                        </button>
+                    )}
                 </div>
 
                 {enrollments.length === 0 ? (
@@ -63,7 +78,7 @@ export const MyCertificationsPage: React.FC = () => {
                         <p className="text-slate-500 max-w-md mx-auto mb-8 text-sm md:text-base">
                             You haven't enrolled in any certifications yet. Start your journey to mastery today.
                         </p>
-                        <button 
+                        <button
                             onClick={() => navigate('/')}
                             className="w-full sm:w-auto bg-purple-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-purple-700 transition inline-flex justify-center items-center gap-2 shadow-lg shadow-purple-200"
                         >
@@ -76,17 +91,17 @@ export const MyCertificationsPage: React.FC = () => {
                             const certDetails = CERTIFICATIONS.find(c => c.id === enrollment.certificationId);
                             const isProcessing = processingId === enrollment.id;
                             const isFullyPaid = enrollment.paymentStatus === 'Paid';
-                            
+
                             return (
                                 <div key={enrollment.id} className="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-100 flex flex-col lg:flex-row gap-6 md:gap-8 items-start animate-fade-in-up">
                                     {/* Icon & Basic Info */}
                                     <div className="flex flex-row gap-4 md:gap-6 w-full lg:w-1/3">
                                         <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex-shrink-0 flex items-center justify-center text-white font-bold text-2xl md:text-3xl shadow-lg
-                                            ${enrollment.badgeColor === 'purple' ? 'bg-purple-600' : 
-                                              enrollment.badgeColor === 'blue' ? 'bg-blue-500' : 
-                                              enrollment.badgeColor === 'green' ? 'bg-green-500' : 
-                                              enrollment.badgeColor === 'yellow' ? 'bg-yellow-500' :
-                                              enrollment.badgeColor === 'orange' ? 'bg-orange-500' : 'bg-red-500'}
+                                            ${enrollment.badgeColor === 'purple' ? 'bg-purple-600' :
+                                                enrollment.badgeColor === 'blue' ? 'bg-blue-500' :
+                                                    enrollment.badgeColor === 'green' ? 'bg-green-500' :
+                                                        enrollment.badgeColor === 'yellow' ? 'bg-yellow-500' :
+                                                            enrollment.badgeColor === 'orange' ? 'bg-orange-500' : 'bg-red-500'}
                                         `}>
                                             {enrollment.certificationName.charAt(0)}
                                         </div>
@@ -94,7 +109,7 @@ export const MyCertificationsPage: React.FC = () => {
                                             <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-1 leading-tight">{enrollment.certificationName}</h3>
                                             <p className="text-xs md:text-sm text-slate-500 mb-2 md:mb-3">Enrolled on {enrollment.enrollmentDate}</p>
                                             {getStatusBadge(enrollment.paymentStatus)}
-                                            
+
                                             {/* Demo Progress Controls */}
                                             <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-slate-50 hidden sm:block">
                                                 <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 flex items-center gap-1">
@@ -117,8 +132,8 @@ export const MyCertificationsPage: React.FC = () => {
                                                 <span className="text-purple-600">{enrollment.completionPercentage}%</span>
                                             </div>
                                             <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                                <div 
-                                                    className="h-full bg-purple-600 rounded-full transition-all duration-1000" 
+                                                <div
+                                                    className="h-full bg-purple-600 rounded-full transition-all duration-1000"
                                                     style={{ width: `${enrollment.completionPercentage}%` }}
                                                 />
                                             </div>
@@ -138,9 +153,8 @@ export const MyCertificationsPage: React.FC = () => {
                                                 </div>
                                                 <div className="flex gap-2 mb-1">
                                                     {[1, 2, 3].map((i) => (
-                                                        <div key={i} className={`h-2 flex-1 rounded-full ${
-                                                            i <= enrollment.installmentsPaidCount ? 'bg-green-500' : 'bg-slate-200'
-                                                        }`} />
+                                                        <div key={i} className={`h-2 flex-1 rounded-full ${i <= enrollment.installmentsPaidCount ? 'bg-green-500' : 'bg-slate-200'
+                                                            }`} />
                                                     ))}
                                                 </div>
                                                 <div className="flex justify-between text-xs">
@@ -153,24 +167,24 @@ export const MyCertificationsPage: React.FC = () => {
 
                                     {/* Actions */}
                                     <div className="flex flex-col gap-2 md:gap-3 w-full lg:w-auto lg:min-w-[200px]">
-                                        <Link 
+                                        <Link
                                             to={`/cert/${enrollment.slug}`}
                                             className="px-6 py-3 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition flex items-center justify-center gap-2 shadow-lg shadow-purple-200 w-full"
                                         >
                                             <BookOpen size={16} /> Continue Learning
                                         </Link>
-                                        
+
                                         {enrollment.paymentStatus === 'Pending' && (
-                                             <button 
+                                            <button
                                                 onClick={() => navigate(`/checkout/${enrollment.slug}`)}
                                                 className="px-6 py-3 bg-red-50 text-red-700 border border-red-200 rounded-xl font-medium text-sm hover:bg-red-100 transition flex items-center justify-center gap-2 w-full"
-                                             >
+                                            >
                                                 <RefreshCcw size={16} /> Retry Payment
-                                             </button>
+                                            </button>
                                         )}
 
                                         {enrollment.paymentPlan === 'installment' && !isFullyPaid && (
-                                            <button 
+                                            <button
                                                 onClick={() => handlePayInstallment(enrollment)}
                                                 disabled={isProcessing}
                                                 className="px-6 py-3 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl font-medium text-sm hover:bg-amber-100 transition flex items-center justify-center gap-2 disabled:opacity-70 w-full"
@@ -179,9 +193,9 @@ export const MyCertificationsPage: React.FC = () => {
                                                 {isProcessing ? 'Processing...' : 'Pay Next Installment'}
                                             </button>
                                         )}
-                                        
+
                                         {enrollment.completionPercentage === 100 && (
-                                            <button 
+                                            <button
                                                 onClick={() => setCertToDownload(enrollment)}
                                                 className="px-6 py-3 bg-green-50 text-green-700 border border-green-200 rounded-xl font-medium text-sm hover:bg-green-100 transition flex items-center justify-center gap-2 w-full"
                                             >
@@ -195,8 +209,8 @@ export const MyCertificationsPage: React.FC = () => {
                     </div>
                 )}
             </div>
-            
-            <CertificatePreviewModal 
+
+            <CertificatePreviewModal
                 isOpen={!!certToDownload}
                 onClose={() => setCertToDownload(null)}
                 certificationName={certToDownload?.certificationName || ''}

@@ -72,19 +72,19 @@ const JourneyLevelItem: React.FC<{
 }> = ({ title, description, tags, borderHex, icon, isMastery }) => (
   <div 
     className={`
-      flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10 p-6 md:p-10 rounded-2xl md:rounded-3xl border-l-[8px] md:border-l-[12px] 
-      transition-all duration-300 hover:shadow-[0_15px_40px_rgba(13,148,136,0.15)]
+      flex flex-col md:flex-row items-start md:items-center gap-5 md:gap-8 p-5 md:p-8 rounded-2xl md:rounded-3xl border-l-[6px] md:border-l-[8px] 
+      transition-all duration-300 hover:shadow-[0_10px_30px_rgba(13,148,136,0.1)]
       ${isMastery ? 'bg-gradient-to-br from-purple-50/50 to-pink-50/50' : 'bg-gradient-to-br from-teal-50/10 to-purple-50/10'}
     `} 
     style={{ borderLeftColor: borderHex }}
   >
-    <div className="text-6xl md:text-[5rem] flex-shrink-0 leading-none mb-4 md:mb-0">{icon}</div>
+    <div className="text-4xl md:text-6xl flex-shrink-0 leading-none mb-3 md:mb-0">{icon}</div>
     <div className="flex-1 w-full">
-      <h3 className="font-serif text-2xl md:text-4xl font-bold text-slate-900 mb-2 leading-tight">{title}</h3>
-      <p className="text-slate-700 text-base md:text-xl mb-6 leading-relaxed">{description}</p>
-      <div className="flex flex-wrap gap-2 md:gap-3">
+      <h3 className="font-serif text-xl md:text-2xl font-bold text-slate-900 mb-2 leading-tight">{title}</h3>
+      <p className="text-slate-700 text-sm md:text-base mb-4 leading-relaxed">{description}</p>
+      <div className="flex flex-wrap gap-2">
         {tags.map((tag, idx) => (
-           <span key={idx} className="px-3 py-1.5 md:px-5 md:py-2.5 rounded-full text-xs md:text-base font-bold bg-white/80 text-slate-700 whitespace-nowrap border border-slate-200 shadow-sm">
+           <span key={idx} className="px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs font-semibold bg-white/80 text-slate-700 whitespace-nowrap border border-slate-200 shadow-sm">
              {tag.label}
            </span>
         ))}
@@ -94,34 +94,34 @@ const JourneyLevelItem: React.FC<{
 );
 
 const IncentivesBanner: React.FC = () => (
-  <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white p-6 md:p-16 rounded-2xl md:rounded-[30px] mb-16 md:mb-24 relative overflow-hidden shadow-2xl">
+  <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white p-6 md:p-10 rounded-2xl md:rounded-[24px] mb-12 md:mb-20 relative overflow-hidden shadow-xl">
     {/* Background Watermark */}
-    <div className="absolute -top-10 -right-10 text-[150px] md:text-[350px] opacity-10 transform rotate-12 pointer-events-none">🎁</div>
+    <div className="absolute -top-10 -right-10 text-[120px] md:text-[250px] opacity-10 transform rotate-12 pointer-events-none">🎁</div>
     
     <div className="relative z-10 max-w-6xl">
-      <h2 className="font-serif text-2xl md:text-5xl font-black mb-3 md:mb-4">🎁 Special Incentives</h2>
-      <p className="text-lg md:text-2xl opacity-90 mb-8 md:mb-12 font-medium">Get exclusive benefits that accelerate your practice growth</p>
+      <h2 className="font-serif text-2xl md:text-3xl font-black mb-2 md:mb-3">🎁 Special Incentives</h2>
+      <p className="text-base md:text-lg opacity-90 mb-6 md:mb-8 font-medium">Get exclusive benefits that accelerate your practice growth</p>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-        <div className="bg-white/15 backdrop-blur-md p-5 md:p-8 rounded-xl md:rounded-2xl border border-white/20">
-           <div className="text-3xl md:text-5xl mb-3 md:mb-4">⚡</div>
-           <strong className="block text-lg md:text-xl font-bold mb-1 md:mb-2">Lead Priority</strong>
-           <p className="text-sm md:text-base opacity-90 leading-relaxed">24hr access to new patient referrals</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white/15 backdrop-blur-md p-4 md:p-6 rounded-xl border border-white/20">
+           <div className="text-2xl md:text-3xl mb-2 md:mb-3">⚡</div>
+           <strong className="block text-base md:text-lg font-bold mb-1">Lead Priority</strong>
+           <p className="text-xs md:text-sm opacity-90 leading-relaxed">24hr access to new patient referrals</p>
         </div>
-        <div className="bg-white/15 backdrop-blur-md p-5 md:p-8 rounded-xl md:rounded-2xl border border-white/20">
-           <div className="text-3xl md:text-5xl mb-3 md:mb-4">📈</div>
-           <strong className="block text-lg md:text-xl font-bold mb-1 md:mb-2">Visibility</strong>
-           <p className="text-sm md:text-base opacity-90 leading-relaxed">Premium listing at top of search</p>
+        <div className="bg-white/15 backdrop-blur-md p-4 md:p-6 rounded-xl border border-white/20">
+           <div className="text-2xl md:text-3xl mb-2 md:mb-3">📈</div>
+           <strong className="block text-base md:text-lg font-bold mb-1">Visibility</strong>
+           <p className="text-xs md:text-sm opacity-90 leading-relaxed">Premium listing at top of search</p>
         </div>
-        <div className="bg-white/15 backdrop-blur-md p-5 md:p-8 rounded-xl md:rounded-2xl border border-white/20">
-           <div className="text-3xl md:text-5xl mb-3 md:mb-4">💰</div>
-           <strong className="block text-lg md:text-xl font-bold mb-1 md:mb-2">Flexible Pay</strong>
-           <p className="text-sm md:text-base opacity-90 leading-relaxed">3 easy installments available</p>
+        <div className="bg-white/15 backdrop-blur-md p-4 md:p-6 rounded-xl border border-white/20">
+           <div className="text-2xl md:text-3xl mb-2 md:mb-3">💰</div>
+           <strong className="block text-base md:text-lg font-bold mb-1">Flexible Pay</strong>
+           <p className="text-xs md:text-sm opacity-90 leading-relaxed">3 easy installments available</p>
         </div>
-        <div className="bg-white/15 backdrop-blur-md p-5 md:p-8 rounded-xl md:rounded-2xl border border-white/20">
-           <div className="text-3xl md:text-5xl mb-3 md:mb-4">🎓</div>
-           <strong className="block text-lg md:text-xl font-bold mb-1 md:mb-2">Lifetime Access</strong>
-           <p className="text-sm md:text-base opacity-90 leading-relaxed">All training materials & updates</p>
+        <div className="bg-white/15 backdrop-blur-md p-4 md:p-6 rounded-xl border border-white/20">
+           <div className="text-2xl md:text-3xl mb-2 md:mb-3">🎓</div>
+           <strong className="block text-base md:text-lg font-bold mb-1">Lifetime Access</strong>
+           <p className="text-xs md:text-sm opacity-90 leading-relaxed">All training materials & updates</p>
         </div>
       </div>
     </div>
@@ -136,65 +136,65 @@ const CertificationCard: React.FC<{ cert: Certification }> = ({ cert }) => {
     <div 
       onClick={() => navigate(`/cert/${cert.slug}`)}
       className={`
-        group relative bg-white rounded-2xl md:rounded-[30px] p-6 md:p-10 shadow-[0_5px_15px_rgba(0,0,0,0.05)] 
-        hover:shadow-[0_25px_70px_rgba(0,0,0,0.15)] transition-all duration-400 
-        hover:-translate-y-2 cursor-pointer border-t-[6px] md:border-t-[8px] flex flex-col h-full
+        group relative bg-white rounded-2xl p-5 md:p-7 shadow-[0_4px_12px_rgba(0,0,0,0.05)] 
+        hover:shadow-[0_15px_40px_rgba(0,0,0,0.1)] transition-all duration-400 
+        hover:-translate-y-1 cursor-pointer border-t-[4px] md:border-t-[6px] flex flex-col h-full
         ${styles.border}
       `}
     >
       {/* Badge */}
       <div className={`
-        w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center text-4xl md:text-6xl mb-6 md:mb-8 shadow-lg text-white
+        w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center text-2xl md:text-3xl mb-4 md:mb-6 shadow-md text-white
         ${cert.tier === 'Mastery' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : styles.badgeBg}
       `}>
         {cert.name.charAt(0)}
       </div>
 
-      <h3 className="font-serif text-2xl md:text-4xl leading-tight font-bold text-slate-900 mb-3">
+      <h3 className="font-serif text-lg md:text-2xl leading-tight font-bold text-slate-900 mb-2">
         {cert.name}
       </h3>
-      <p className="text-slate-600 text-base md:text-lg mb-6 md:mb-8 min-h-[40px] md:min-h-[60px] leading-relaxed">{cert.description}</p>
+      <p className="text-slate-600 text-sm mb-5 md:mb-6 min-h-[40px] leading-relaxed line-clamp-2">{cert.description}</p>
 
       {/* Details Grid */}
-      <div className="grid grid-cols-2 gap-4 md:gap-6 p-4 md:p-8 rounded-2xl mb-6 md:mb-8 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-100">
+      <div className="grid grid-cols-2 gap-3 md:gap-4 p-3 md:p-5 rounded-xl mb-5 md:mb-6 bg-slate-50 border border-slate-100">
         <div className="flex flex-col">
-           <span className="text-xs md:text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Duration</span>
-           <span className="font-serif font-bold text-lg md:text-2xl text-slate-900">{cert.duration_weeks} Weeks</span>
+           <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400 mb-0.5">Duration</span>
+           <span className="font-serif font-bold text-sm md:text-lg text-slate-900">{cert.duration_weeks} Weeks</span>
         </div>
         <div className="flex flex-col">
-           <span className="text-xs md:text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">
+           <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400 mb-0.5">
              {cert.price_inr === 0 ? 'Investment' : 'Income'}
            </span>
-           <span className={`font-serif font-bold text-lg md:text-2xl ${cert.price_inr > 0 ? 'text-purple-700' : 'text-slate-900'}`}>
+           <span className={`font-serif font-bold text-sm md:text-lg ${cert.price_inr > 0 ? 'text-purple-700' : 'text-slate-900'}`}>
              {cert.price_inr === 0 ? 'Free' : `₹${(cert.monthly_income_min_inr/1000).toFixed(0)}k+`}
            </span>
         </div>
         <div className="flex flex-col">
-           <span className="text-xs md:text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Fee</span>
-           <span className="font-serif font-bold text-lg md:text-2xl text-slate-900">{cert.price_inr === 0 ? 'Sponsored' : `₹${(cert.price_inr/1000).toFixed(0)}k`}</span>
+           <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400 mb-0.5">Fee</span>
+           <span className="font-serif font-bold text-sm md:text-lg text-slate-900">{cert.price_inr === 0 ? 'Sponsored' : `₹${(cert.price_inr/1000).toFixed(0)}k`}</span>
         </div>
       </div>
 
       {/* Benefits List */}
-      <div className="mb-8 flex-grow">
-        <ul className="space-y-3 md:space-y-4">
+      <div className="mb-6 flex-grow">
+        <ul className="space-y-2.5">
            {cert.requirements.slice(0, 4).map((req, i) => (
-             <li key={i} className="flex items-start gap-3 md:gap-4 text-sm md:text-lg text-slate-600 relative pl-1">
-               <span className="text-emerald-500 font-bold text-lg md:text-xl flex-shrink-0">✓</span>
-               <span className="leading-normal">{req}</span>
+             <li key={i} className="flex items-start gap-2.5 text-xs md:text-sm text-slate-600 relative pl-1">
+               <span className="text-emerald-500 font-bold text-sm flex-shrink-0 mt-0.5">✓</span>
+               <span className="leading-snug">{req}</span>
              </li>
            ))}
         </ul>
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mt-auto">
+      <div className="flex flex-col sm:flex-row gap-3 mt-auto">
         <button 
           onClick={(e) => {
             e.stopPropagation();
             navigate(`/checkout/${cert.slug}`);
           }}
-          className="flex-1 bg-gradient-to-r from-teal-600 to-purple-600 text-white py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-lg md:text-xl hover:shadow-lg transition-all"
+          className="flex-1 bg-gradient-to-r from-teal-600 to-purple-600 text-white py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold text-sm md:text-base hover:shadow-lg transition-all"
         >
           {cert.price_inr === 0 ? 'Start Free' : 'Enroll Now'}
         </button>
@@ -203,7 +203,7 @@ const CertificationCard: React.FC<{ cert: Certification }> = ({ cert }) => {
             e.stopPropagation();
             navigate(`/cert/${cert.slug}`);
           }}
-          className={`w-full sm:w-auto px-6 md:px-8 py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-lg md:text-xl border-2 transition hover:bg-teal-50 border-teal-600 text-teal-600`}
+          className={`w-full sm:w-auto px-4 md:px-6 py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold text-sm md:text-base border transition hover:bg-teal-50 border-teal-600 text-teal-600`}
         >
           Details
         </button>
@@ -224,35 +224,35 @@ const ComparisonTable: React.FC = () => {
     ];
   
     return (
-      <div className="max-w-[1600px] mx-auto mt-16 md:mt-32 mb-10 md:mb-20 px-0 md:px-4">
-        <div className="text-center mb-8 md:mb-16 px-4">
-          <h2 className="font-serif text-3xl md:text-5xl font-bold text-slate-900 mb-2 md:mb-4">Quick Comparison</h2>
-          <p className="text-slate-600 text-lg md:text-2xl">Compare all certifications at a glance</p>
+      <div className="max-w-[1400px] mx-auto mt-12 md:mt-24 mb-8 md:mb-16 px-0 md:px-4">
+        <div className="text-center mb-6 md:mb-10 px-4">
+          <h2 className="font-serif text-2xl md:text-4xl font-bold text-slate-900 mb-2">Quick Comparison</h2>
+          <p className="text-slate-600 text-base md:text-lg">Compare all certifications at a glance</p>
         </div>
         
-        <div className="bg-white md:rounded-[30px] shadow-lg overflow-hidden border-t border-b md:border border-slate-100">
+        <div className="bg-white md:rounded-[20px] shadow-sm overflow-hidden border-t border-b md:border border-slate-200">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] border-collapse">
+            <table className="w-full min-w-[800px] border-collapse text-sm">
                 <thead>
-                <tr className="bg-gradient-to-r from-teal-600 to-purple-600 text-white text-left">
-                    <th className="p-4 md:p-8 font-bold text-base md:text-xl tracking-wide">Certification</th>
-                    <th className="p-4 md:p-8 font-bold text-base md:text-xl tracking-wide">Duration</th>
-                    <th className="p-4 md:p-8 font-bold text-base md:text-xl tracking-wide">Investment</th>
-                    <th className="p-4 md:p-8 font-bold text-base md:text-xl tracking-wide">Income</th>
-                    <th className="p-4 md:p-8 font-bold text-base md:text-xl tracking-wide">Prerequisites</th>
+                <tr className="bg-slate-50 text-slate-700 text-left border-b border-slate-200">
+                    <th className="p-4 md:p-5 font-bold text-sm tracking-wide">Certification</th>
+                    <th className="p-4 md:p-5 font-bold text-sm tracking-wide">Duration</th>
+                    <th className="p-4 md:p-5 font-bold text-sm tracking-wide">Investment</th>
+                    <th className="p-4 md:p-5 font-bold text-sm tracking-wide">Income Potential</th>
+                    <th className="p-4 md:p-5 font-bold text-sm tracking-wide">Prerequisites</th>
                 </tr>
                 </thead>
                 <tbody>
                 {rows.map((row, idx) => (
                     <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50 transition-colors last:border-0">
-                    <td className="p-4 md:p-8 font-bold text-sm md:text-xl text-slate-900 flex items-center gap-3 md:gap-4">
-                        <span className={`w-4 h-4 md:w-6 md:h-6 rounded-full ${row.color} flex-shrink-0`}></span>
+                    <td className="p-4 md:p-5 font-bold text-slate-900 flex items-center gap-3">
+                        <span className={`w-3 h-3 rounded-full ${row.color} flex-shrink-0`}></span>
                         {row.name}
                     </td>
-                    <td className="p-4 md:p-8 text-sm md:text-lg text-slate-600">{row.duration}</td>
-                    <td className="p-4 md:p-8 text-sm md:text-lg text-slate-600 font-bold">{row.inv}</td>
-                    <td className="p-4 md:p-8 text-sm md:text-lg text-slate-600">{row.income}</td>
-                    <td className="p-4 md:p-8 text-sm md:text-lg text-slate-600">{row.pre}</td>
+                    <td className="p-4 md:p-5 text-slate-600">{row.duration}</td>
+                    <td className="p-4 md:p-5 text-slate-600 font-bold">{row.inv}</td>
+                    <td className="p-4 md:p-5 text-slate-600">{row.income}</td>
+                    <td className="p-4 md:p-5 text-slate-600">{row.pre}</td>
                     </tr>
                 ))}
                 </tbody>
@@ -265,22 +265,22 @@ const ComparisonTable: React.FC = () => {
 
 export const JourneyMap: React.FC<JourneyMapProps> = ({ certifications }) => {
   return (
-    <div className="space-y-12 md:space-y-20">
+    <div className="space-y-12 md:space-y-16">
       
       {/* 1. Journey Summary Box */}
-      <div className="max-w-[1400px] mx-auto">
-        <div className="text-center mb-10 md:mb-16">
-           <h2 className="font-serif text-3xl md:text-6xl font-black text-slate-900 mb-4 md:mb-6">Your Journey</h2>
-           <p className="text-slate-600 text-lg md:text-2xl max-w-4xl mx-auto leading-relaxed px-2">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="text-center mb-8 md:mb-12">
+           <h2 className="font-serif text-3xl md:text-5xl font-black text-slate-900 mb-3 md:mb-4">Your Journey</h2>
+           <p className="text-slate-600 text-base md:text-xl max-w-3xl mx-auto leading-relaxed px-4">
               Choose your entry point based on your background and aspirations.
            </p>
         </div>
 
-        <div className="bg-white rounded-2xl md:rounded-[40px] shadow-xl relative overflow-hidden mb-12 md:mb-24 mx-2 md:mx-0">
+        <div className="bg-white rounded-2xl md:rounded-[30px] shadow-lg relative overflow-hidden mb-10 md:mb-16 mx-4 md:mx-0 border border-slate-100">
             {/* Gradient Top Border */}
-            <div className="absolute top-0 left-0 right-0 h-2 md:h-3 bg-gradient-to-r from-teal-500 via-purple-500 to-pink-500"></div>
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 via-purple-500 to-pink-500"></div>
             
-            <div className="p-4 md:p-16 flex flex-col gap-6 md:gap-10">
+            <div className="p-5 md:p-10 flex flex-col gap-6 md:gap-8">
                  <JourneyLevelItem 
                    title="Entry Level"
                    description="Start your mental wellness journey with patient psychoeducation."
@@ -318,20 +318,20 @@ export const JourneyMap: React.FC<JourneyMapProps> = ({ certifications }) => {
       </div>
 
       {/* 2. Incentives Banner */}
-      <div className="max-w-[1400px] mx-auto px-2 md:px-0">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-0">
         <IncentivesBanner />
       </div>
 
       {/* 3. Certifications Grid */}
-      <div className="max-w-[1600px] mx-auto" id="certifications-grid">
-        <div className="text-center mb-10 md:mb-16">
-           <h2 className="font-serif text-3xl md:text-6xl font-black text-slate-900 mb-4 md:mb-6">Choose Your Path</h2>
-           <p className="text-slate-600 text-lg md:text-2xl max-w-4xl mx-auto">
+      <div className="max-w-[1400px] mx-auto" id="certifications-grid">
+        <div className="text-center mb-8 md:mb-12">
+           <h2 className="font-serif text-3xl md:text-5xl font-black text-slate-900 mb-3 md:mb-4">Choose Your Path</h2>
+           <p className="text-slate-600 text-base md:text-xl max-w-3xl mx-auto">
               Each certification is designed for specific backgrounds and career goals.
            </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 px-2 md:px-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 px-4 md:px-6">
           {certifications.map(cert => (
             <CertificationCard key={cert.id} cert={cert} />
           ))}

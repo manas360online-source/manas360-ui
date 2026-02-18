@@ -25,24 +25,18 @@ export const ARPlansPage: React.FC = () => {
   const handleStartFree = () => {
     window.location.hash = `#/${i18n.language}/ar-themed-room`;
     setTimeout(() => {
-        const element = document.getElementById('themes-wall');
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      const element = document.getElementById('themes-wall');
+      if (element) element.scrollIntoView({ behavior: 'smooth' });
     }, 600);
   };
 
   const handleSubscribe = (plan: 'premier' | 'plus') => {
-    setSuccessPlanName(plan === 'premier' ? 'AR Premier' : 'AR Premier Plus');
-    
-    // Save Plan Logic (Demo)
-    storageService.saveARPlan(plan);
-    storageService.saveSubscription({
-      category: 'AR Themed Room',
-      planName: plan === 'premier' ? 'Premier' : 'Premier Plus',
-      price: plan === 'premier' ? '₹99/month' : '₹199/month'
-    });
+    const planName = plan === 'premier' ? 'AR Premier' : 'AR Premier Plus';
+    const price = plan === 'premier' ? '₹99/month' : '₹199/month';
+    const returnUrl = `ar-themed-room?plan=${plan}`;
 
-    setActivePlan(plan);
-    setShowSuccessModal(true);
+    // Redirect to Payment Gateway Landing
+    window.location.hash = `#/payment-landing?planName=${encodeURIComponent(planName)}&price=${encodeURIComponent(price)}&returnUrl=${encodeURIComponent('#/' + i18n.language + '/' + returnUrl)}`;
   };
 
   const handleModalOk = () => {
@@ -52,7 +46,7 @@ export const ARPlansPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FDFCF8] font-sans text-[#1A1A1A] p-4 md:p-8 flex flex-col items-center relative">
-      
+
       <div className="absolute top-6 right-6 z-[2000] select-none pointer-events-none drop-shadow-sm">
         <span className="text-[28px] leading-none">🧿</span>
       </div>
@@ -61,12 +55,12 @@ export const ARPlansPage: React.FC = () => {
         <button onClick={handleBack} className="text-[#0A3A78] font-bold flex items-center gap-2 hover:opacity-75 transition-opacity text-lg self-start sm:self-center">
           <span className="text-2xl">←</span> Back to AR Room
         </button>
-        
+
         <div className="flex items-center gap-4 self-end sm:self-center">
-            <button onClick={handleBilling} className="px-5 py-2 rounded-xl border border-[#0A3A78]/10 bg-white/50 text-[#0A3A78] font-bold text-xs flex items-center gap-2 hover:bg-white transition-all whitespace-nowrap shadow-sm">
-               <span className="text-base">📋</span> Billing History
-            </button>
-            <div className="font-serif text-[#0A3A78] font-bold text-xl tracking-widest hidden md:block">MANAS360</div>
+          <button onClick={handleBilling} className="px-5 py-2 rounded-xl border border-[#0A3A78]/10 bg-white/50 text-[#0A3A78] font-bold text-xs flex items-center gap-2 hover:bg-white transition-all whitespace-nowrap shadow-sm">
+            <span className="text-base">📋</span> Billing History
+          </button>
+          <div className="font-serif text-[#0A3A78] font-bold text-xl tracking-widest hidden md:block">MANAS360</div>
         </div>
       </div>
 
@@ -76,62 +70,62 @@ export const ARPlansPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 max-w-[1200px] w-full items-stretch justify-center">
-        
-        <PricingCard 
-            title="Start Free"
-            price="₹0"
-            period="forever"
-            features={[
-                "Access to Boat Near Ocean",
-                "Access to Green Tea Plantation",
-                "Basic video quality",
-                "Standard audio tracks"
-            ]}
-            isSelected={selectedPlan === 'free'}
-            isActivePlan={false} 
-            onSelect={() => setSelectedPlan('free')}
-            buttonLabel="Start Free"
-            onButtonClick={handleStartFree}
+
+        <PricingCard
+          title="Start Free"
+          price="₹0"
+          period="forever"
+          features={[
+            "Access to Boat Near Ocean",
+            "Access to Green Tea Plantation",
+            "Basic video quality",
+            "Standard audio tracks"
+          ]}
+          isSelected={selectedPlan === 'free'}
+          isActivePlan={false}
+          onSelect={() => setSelectedPlan('free')}
+          buttonLabel="Start Free"
+          onButtonClick={handleStartFree}
         />
 
-        <PricingCard 
-            title="Premier"
-            price="₹99"
-            period="/month"
-            subtext="= ₹3.30/day"
-            features={[
-                "Everything in Free",
-                "Unlock YOUR REAL ROOM (AR)",
-                "Unlock Ocean Waves",
-                "Higher quality audio",
-                "Live Camera Experience"
-            ]}
-            isSelected={selectedPlan === 'premier'}
-            isActivePlan={activePlan === 'premier'}
-            onSelect={() => setSelectedPlan('premier')}
-            buttonLabel="Subscribe ₹99"
-            onButtonClick={() => handleSubscribe('premier')}
+        <PricingCard
+          title="Premier"
+          price="₹99"
+          period="/month"
+          subtext="= ₹3.30/day"
+          features={[
+            "Everything in Free",
+            "Unlock YOUR REAL ROOM (AR)",
+            "Unlock Ocean Waves",
+            "Higher quality audio",
+            "Live Camera Experience"
+          ]}
+          isSelected={selectedPlan === 'premier'}
+          isActivePlan={activePlan === 'premier'}
+          onSelect={() => setSelectedPlan('premier')}
+          buttonLabel="Subscribe ₹99"
+          onButtonClick={() => handleSubscribe('premier')}
         />
 
-        <PricingCard 
-            title="Premier Plus"
-            price="₹199"
-            period="/month"
-            subtext="= ₹6.60/day"
-            features={[
-                "Everything in Premier",
-                "Unlock Enchanted Forest",
-                "Unlock Himalayan Sunrise",
-                "ALL Future Themes",
-                "4K Video Quality",
-                "Spatial Audio Support"
-            ]}
-            isSelected={selectedPlan === 'plus'}
-            isActivePlan={activePlan === 'plus'}
-            onSelect={() => setSelectedPlan('plus')}
-            buttonLabel="Subscribe ₹199"
-            onButtonClick={() => handleSubscribe('plus')}
-            isPopular={true}
+        <PricingCard
+          title="Premier Plus"
+          price="₹199"
+          period="/month"
+          subtext="= ₹6.60/day"
+          features={[
+            "Everything in Premier",
+            "Unlock Enchanted Forest",
+            "Unlock Himalayan Sunrise",
+            "ALL Future Themes",
+            "4K Video Quality",
+            "Spatial Audio Support"
+          ]}
+          isSelected={selectedPlan === 'plus'}
+          isActivePlan={activePlan === 'plus'}
+          onSelect={() => setSelectedPlan('plus')}
+          buttonLabel="Subscribe ₹199"
+          onButtonClick={() => handleSubscribe('plus')}
+          isPopular={true}
         />
 
       </div>
@@ -142,9 +136,9 @@ export const ARPlansPage: React.FC = () => {
             <div className="text-6xl mb-6">✅</div>
             <h3 className="font-serif text-2xl font-bold text-[#0A3A78] mb-4">Subscription Successful</h3>
             <p className="text-slate-600 mb-8 font-medium">
-              You have successfully subscribed to <br/><span className="text-[#1FA2DE] font-bold text-lg">{successPlanName}</span>
+              You have successfully subscribed to <br /><span className="text-[#1FA2DE] font-bold text-lg">{successPlanName}</span>
             </p>
-            <button 
+            <button
               onClick={handleModalOk}
               className="w-full py-4 rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
             >
@@ -172,17 +166,17 @@ interface PricingCardProps {
   isPopular?: boolean;
 }
 
-const PricingCard: React.FC<PricingCardProps> = ({ 
-  title, price, period, subtext, features, 
-  isSelected, isActivePlan, onSelect, buttonLabel, onButtonClick, isPopular 
+const PricingCard: React.FC<PricingCardProps> = ({
+  title, price, period, subtext, features,
+  isSelected, isActivePlan, onSelect, buttonLabel, onButtonClick, isPopular
 }) => {
   return (
-    <div 
+    <div
       onClick={onSelect}
       className={`
         relative flex flex-col p-8 rounded-[32px] cursor-pointer transition-all duration-300 border-2 w-full lg:w-1/3
-        ${isSelected 
-          ? 'border-[#1FA2DE] bg-[#F0F9FF] shadow-[0_20px_50px_-10px_rgba(31,162,222,0.15)] scale-[1.02] z-10' 
+        ${isSelected
+          ? 'border-[#1FA2DE] bg-[#F0F9FF] shadow-[0_20px_50px_-10px_rgba(31,162,222,0.15)] scale-[1.02] z-10'
           : 'border-slate-100 bg-white hover:border-slate-200 hover:shadow-xl'
         }
         ${isPopular && !isSelected ? 'border-slate-200' : ''}
@@ -203,7 +197,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
       <h3 className={`font-serif text-xl font-bold mb-4 text-center ${isSelected ? 'text-[#0A3A78]' : 'text-slate-600'}`}>
         {title}
       </h3>
-      
+
       <div className="text-center mb-8 border-b border-slate-100 pb-6">
         <div className="flex items-end justify-center leading-none">
           <span className={`text-4xl md:text-5xl font-bold ${isSelected ? 'text-[#1FA2DE]' : 'text-slate-700'}`}>{price}</span>
@@ -221,7 +215,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
         ))}
       </ul>
 
-      <button 
+      <button
         onClick={(e) => {
           e.stopPropagation();
           onSelect();
@@ -232,8 +226,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
           w-full py-4 rounded-full font-bold text-base transition-all
           ${isActivePlan
             ? 'bg-emerald-500 text-white cursor-default shadow-none'
-            : isSelected 
-              ? 'bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95' 
+            : isSelected
+              ? 'bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95'
               : 'bg-white border-2 border-slate-200 text-slate-500 hover:border-[#1FA2DE] hover:text-[#1FA2DE]'
           }
         `}

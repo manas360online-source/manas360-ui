@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BackgroundParticles } from './components/BackgroundParticles';
 import { Header } from './components/Header';
@@ -38,16 +38,26 @@ import { ARRealRoomPlayer } from './components/ARRealRoomplayer';
 import { FreeToolsPage } from './components/FreeToolsPage';
 import { QuickLaunchDock } from './components/QuickLaunchDock';
 import { LoginModal } from './components/LoginModal';
-import { RoleSelection } from './components/RoleSelection';
+
 import { ProfileSetup } from './components/ProfileSetup';
-import { TherapistRegistration } from './components/TherapistRegistration';
 import TherapistRegistrationFlow from './TherapistRegistrationFlow/TherapistRegistrationFlow';
+import { PaymentOutcomeChoice } from './components/payment-gateway/PaymentOutcomeChoice';
+import { PaymentSuccess } from './components/payment-gateway/PaymentSuccess';
+import { PaymentFailure } from './components/payment-gateway/PaymentFailure';
+import { PaymentGatewayLanding } from './components/payment-gateway/PaymentGatewayLanding';
+import { PaymentMethodSelection } from './components/payment-gateway/PaymentMethodSelection';
 import { Session } from './types';
 import { storageService } from './utils/storageService';
-import CertificationApp from './certification-platform/CertificationApp';
-import MatchingApp from './connecting patients to mached therapists/App';
+
 import CBTApp from './CBTSessionEngine/CBTApp';
 import MeeraApp from './MeeraAI chatbot/MeeraApp';
+import GroupSessionsApp from './group-sessions/App';
+import CertificationPlatform from './certification-platform/CertificationApp';
+import SchoolWellnessApp from './school-wellness/App';
+import CorporateWellnessApp from './corporate-wellness/App';
+import MatchingApp from './connecting-patients-to-matched-therapists/App';
+import SingleMeetingJitsi from './single meeting jitsi/App';
+
 
 export type ViewState =
   | 'landing'
@@ -82,14 +92,95 @@ export type ViewState =
   | 'ar-player'
   | 'ar-real-room'
   | 'free-tools'
-  | 'role-selection'
+
   | 'profile-setup'
-  | 'therapist-registration'
-  | 'certifications'
   | 'therapist-matching'
   | 'therapist-registration-flow'
   | 'cbt-sessions'
-  | 'meera-chat';
+  | 'meera-chat'
+  | 'group-sessions'
+  | 'payment-choice'
+  | 'payment-success'
+  | 'payment-failure'
+  | 'payment-landing'
+
+  | 'payment-method'
+  | 'certification-platform'
+  | 'school-wellness'
+
+  | 'corporate-wellness'
+  | 'video-session'
+
+
+type AssessmentData = Record<string, unknown> | null;
+type UserData = { firstName?: string } & Record<string, unknown>;
+type HistoryRecord = { sessionTitle?: string; sessionId?: string; answers?: unknown } & Record<string, unknown>;
+
+const VIEW_MAP: Record<string, ViewState> = {
+  assessment: 'assessment',
+  results: 'results',
+  crisis: 'crisis',
+  home: 'home',
+  'onboarding/name': 'onboarding-name',
+  'onboarding/email': 'onboarding-email',
+  'full-assessment': 'full-assessment',
+  'assessment/run': 'run-assessment',
+  'assessment/view': 'session-results',
+  therapist: 'therapist-dashboard',
+  'therapist/builder': 'session-builder',
+  'therapist/preview': 'session-preview',
+  subscribe: 'subscribe',
+  'subscribe/patients': 'subscribe-patients',
+  'subscribe/therapists': 'subscribe-therapists',
+  'subscribe/corporate': 'subscribe-corporate',
+  'subscribe/guru': 'subscribe-guru',
+  billing: 'billing',
+  streaks: 'streaks-journey',
+  'sound-therapy': 'sound-therapy',
+  'sound-therapy-plans': 'sound-therapy-plans',
+  'sound-therapy-category': 'sound-therapy-category',
+  'sound-billing': 'sound-billing',
+  'ar-themed-room': 'ar-themed-room',
+  'ar-plans': 'ar-plans',
+  'ar-billing': 'ar-billing',
+  'ar-player': 'ar-player',
+  'ar-real-room': 'ar-real-room',
+  'developer-api-resources': 'developer-api-resources',
+  'cancellation-refund-policy': 'cancellation-refund-policy',
+  'free-tools': 'free-tools',
+
+  'profile-setup': 'profile-setup',
+  'therapist-matching': 'therapist-matching',
+  'cbt-sessions': 'cbt-sessions',
+  'meera-chat': 'meera-chat',
+  'group-sessions': 'group-sessions',
+  'payment-choice': 'payment-choice',
+  'payment-success': 'payment-success',
+  'payment-failure': 'payment-failure',
+  'payment-landing': 'payment-landing',
+
+  'payment-method': 'payment-method',
+  'certification-platform': 'certification-platform',
+  'school-wellness': 'school-wellness',
+  'corporate-wellness': 'corporate-wellness',
+  'video-session': 'video-session',
+};
+
+const PREFIX_VIEWS: Array<{ prefix: string; view: ViewState }> = [
+  { prefix: 'therapist-registration-flow', view: 'therapist-registration-flow' },
+  { prefix: 'certification-platform', view: 'certification-platform' },
+  { prefix: 'school-wellness', view: 'school-wellness' },
+  { prefix: 'corporate-wellness', view: 'corporate-wellness' }
+];
+
+const resolveViewFromPath = (viewPath: string): ViewState => {
+  for (const entry of PREFIX_VIEWS) {
+    if (viewPath.startsWith(entry.prefix)) {
+      return entry.view;
+    }
+  }
+  return VIEW_MAP[viewPath] ?? 'landing';
+};
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
@@ -97,43 +188,24 @@ const App: React.FC = () => {
   const [currentSoundCategory, setCurrentSoundCategory] = useState<string>('');
   const [currentARThemeId, setCurrentARThemeId] = useState<string>('');
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [assessmentData, setAssessmentData] = useState<any>(null);
-  const [userData, setUserData] = useState<any>({});
+  const [assessmentData, setAssessmentData] = useState<AssessmentData>(null);
+  const [userData, setUserData] = useState<UserData>({});
 
   const [editingSession, setEditingSession] = useState<Session | undefined>(undefined);
   const [activeSession, setActiveSession] = useState<Session | undefined>(undefined);
-  const [viewingHistoryRecord, setViewingHistoryRecord] = useState<any>(null);
+  const [viewingHistoryRecord, setViewingHistoryRecord] = useState<HistoryRecord | null>(null);
 
   // Landing Page Login State
   const [showLandingLogin, setShowLandingLogin] = useState(false);
 
   // Helper to get base path with current language
-  const getPath = (view: string) => `#/${i18n.language}/${view}`;
+  const getPath = useCallback((view: string) => `#/${i18n.language}/${view}`, [i18n.language]);
 
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
-
-      // Redirect singular or missing trailing slash
-      if (hash === '#/certification' || hash === '#/certifications') {
-        window.location.hash = '#/certifications/';
-        return;
-      }
-
-      if (hash.startsWith('#/therapist-matching')) {
-        setCurrentView('therapist-matching'); // Direct switch, inner router handles rest
-        return;
-      }
-
-      if (hash.startsWith('#/certifications')) {
-        setIsTransitioning(true);
-        setTimeout(() => {
-          setCurrentView('certifications');
-          setIsTransitioning(false);
-          window.scrollTo(0, 0);
-        }, 300);
-        return;
-      }
+      const transitionDelayMs = 300;
+      const currentLang = i18n.language || 'en';
 
       // Regex to parse #/lang/view
       const match = hash.match(/^#\/([a-z]{2})\/(.*)$/);
@@ -142,15 +214,6 @@ const App: React.FC = () => {
         const lang = match[1];
         const view = match[2];
 
-        if (view.startsWith('certifications')) {
-          // Ensure trailing slash for sub-router to work correctly
-          if (view === 'certifications' && !hash.endsWith('/')) {
-            window.location.hash = '#/certifications/';
-            return;
-          }
-          // If it already has slash or is a sub-route, let it pass through to view mapper
-        }
-
         // Sync i18n language if URL differs
         if (lang !== i18n.language) {
           i18n.changeLanguage(lang);
@@ -158,93 +221,63 @@ const App: React.FC = () => {
 
         setIsTransitioning(true);
         setTimeout(() => {
-          // Check for Sound Therapy Category
-          if (view.startsWith('sound-therapy/plans')) {
-            mapView('sound-therapy-plans');
-          } else if (view.startsWith('sound-therapy/billing')) {
-            mapView('sound-billing');
-          } else if (view.startsWith('sound-therapy/')) {
-            const category = view.split('/')[1];
+          const normalizedView = view.split('?')[0];
+
+          if (normalizedView.startsWith('sound-therapy/plans')) {
+            setCurrentView('sound-therapy-plans');
+          } else if (normalizedView.startsWith('sound-therapy/billing')) {
+            setCurrentView('sound-billing');
+          } else if (normalizedView.startsWith('sound-therapy/')) {
+            const category = normalizedView.split('/')[1] || '';
             setCurrentSoundCategory(category);
-            mapView('sound-therapy-category');
-          } else if (view.startsWith('ar-themed-room/plans')) {
-            mapView('ar-plans');
-          } else if (view.startsWith('ar-themed-room/billing')) {
-            mapView('ar-billing');
-          } else if (view.startsWith('ar-themed-room/real-ar')) {
-            mapView('ar-real-room');
-          } else if (view.startsWith('ar-themed-room/player/')) {
-            const themeId = view.split('/')[2];
+            setCurrentView('sound-therapy-category');
+          } else if (normalizedView.startsWith('ar-themed-room/plans')) {
+            setCurrentView('ar-plans');
+          } else if (normalizedView.startsWith('ar-themed-room/billing')) {
+            setCurrentView('ar-billing');
+          } else if (normalizedView.startsWith('ar-themed-room/real-ar')) {
+            setCurrentView('ar-real-room');
+          } else if (normalizedView.startsWith('ar-themed-room/player/')) {
+            const themeId = normalizedView.split('/')[2] || '';
             setCurrentARThemeId(themeId);
-            mapView('ar-player');
-          } else if (view.startsWith('ar-themed-room')) {
-            mapView('ar-themed-room');
+            setCurrentView('ar-player');
+          } else if (normalizedView.startsWith('ar-themed-room')) {
+            setCurrentView('ar-themed-room');
+          } else if (normalizedView.startsWith('therapist-matching')) {
+            setCurrentView('therapist-matching');
+          } else if (normalizedView.startsWith('group-sessions')) {
+            setCurrentView('group-sessions');
+          } else if (normalizedView.startsWith('payment-choice')) {
+            setCurrentView('payment-choice');
+          } else if (normalizedView.startsWith('payment-landing')) {
+            setCurrentView('payment-landing');
+          } else if (normalizedView.startsWith('payment-method')) {
+            setCurrentView('payment-method');
+          } else if (normalizedView.startsWith('payment-success')) {
+            setCurrentView('payment-success');
+          } else if (normalizedView.startsWith('payment-failure')) {
+            setCurrentView('payment-failure');
+
           } else {
-            // Strip query params for basic view mapping
-            const baseView = view.split('?')[0];
-            mapView(baseView as ViewState);
+            setCurrentView(resolveViewFromPath(normalizedView));
           }
+
           setIsTransitioning(false);
           window.scrollTo(0, 0);
-        }, 300);
+        }, transitionDelayMs);
       } else {
         // Handle routes without lang prefix if any, or redirect defaults
-        const currentLang = i18n.language || 'en';
         // Handle root case
         if (hash === '' || hash === '#/') {
           window.location.hash = `#/${currentLang}/landing`;
         } else {
           // Try to preserve view if it looks like a legacy route
           const legacyView = hash.replace('#/', '');
-          if (!legacyView.includes('/')) {
-            window.location.hash = `#/${currentLang}/${legacyView || 'landing'}`;
+          if (legacyView) {
+            window.location.hash = `#/${currentLang}/${legacyView}`;
           }
         }
       }
-    };
-
-    // View Mapper
-    const mapView = (viewPath: string) => {
-      if (viewPath === 'assessment') setCurrentView('assessment');
-      else if (viewPath === 'results') setCurrentView('results');
-      else if (viewPath === 'crisis') setCurrentView('crisis');
-      else if (viewPath === 'home') setCurrentView('home');
-      else if (viewPath === 'onboarding/name') setCurrentView('onboarding-name');
-      else if (viewPath === 'onboarding/email') setCurrentView('onboarding-email');
-      else if (viewPath === 'full-assessment') setCurrentView('full-assessment');
-      else if (viewPath === 'assessment/run') setCurrentView('run-assessment');
-      else if (viewPath === 'assessment/view') setCurrentView('session-results');
-      else if (viewPath === 'therapist') setCurrentView('therapist-dashboard');
-      else if (viewPath === 'therapist/builder') setCurrentView('session-builder');
-      else if (viewPath === 'therapist/preview') setCurrentView('session-preview');
-      else if (viewPath === 'subscribe') setCurrentView('subscribe');
-      else if (viewPath === 'subscribe/patients') setCurrentView('subscribe-patients');
-      else if (viewPath === 'subscribe/therapists') setCurrentView('subscribe-therapists');
-      else if (viewPath === 'subscribe/corporate') setCurrentView('subscribe-corporate');
-      else if (viewPath === 'subscribe/guru') setCurrentView('subscribe-guru');
-      else if (viewPath === 'billing') setCurrentView('billing');
-      else if (viewPath === 'streaks') setCurrentView('streaks-journey');
-      else if (viewPath === 'sound-therapy') setCurrentView('sound-therapy');
-      else if (viewPath === 'sound-therapy-plans') setCurrentView('sound-therapy-plans');
-      else if (viewPath === 'sound-therapy-category') setCurrentView('sound-therapy-category');
-      else if (viewPath === 'sound-billing') setCurrentView('sound-billing');
-      else if (viewPath === 'ar-themed-room') setCurrentView('ar-themed-room');
-      else if (viewPath === 'ar-plans') setCurrentView('ar-plans');
-      else if (viewPath === 'ar-billing') setCurrentView('ar-billing');
-      else if (viewPath === 'ar-player') setCurrentView('ar-player');
-      else if (viewPath === 'ar-real-room') setCurrentView('ar-real-room');
-      else if (viewPath === 'developer-api-resources') setCurrentView('developer-api-resources');
-      else if (viewPath === 'cancellation-refund-policy') setCurrentView('cancellation-refund-policy');
-      else if (viewPath === 'free-tools') setCurrentView('free-tools');
-      else if (viewPath === 'role-selection') setCurrentView('role-selection');
-      else if (viewPath === 'profile-setup') setCurrentView('profile-setup');
-      else if (viewPath === 'therapist-registration') setCurrentView('therapist-registration');
-      else if (viewPath.startsWith('therapist-registration-flow')) setCurrentView('therapist-registration-flow');
-      else if (viewPath.startsWith('certifications')) setCurrentView('certifications');
-      else if (viewPath === 'cbt-sessions') setCurrentView('cbt-sessions');
-      else if (viewPath === 'meera-chat') setCurrentView('meera-chat');
-
-      else setCurrentView('landing');
     };
 
     handleHashChange();
@@ -275,34 +308,34 @@ const App: React.FC = () => {
     return () => observer.disconnect();
   }, [currentView]);
 
-  const navigate = (view: string) => {
+  const navigate = useCallback((view: string) => {
     window.location.hash = getPath(view);
-  };
+  }, [getPath]);
 
-  const handleStartAssessment = () => {
+  const handleStartAssessment = useCallback(() => {
     // Open Login Modal to start the journey instead of going directly to assessment
     setShowLandingLogin(true);
-  };
+  }, []);
 
-  const handleAssessmentSubmit = (data: any, isCritical: boolean) => {
+  const handleAssessmentSubmit = useCallback((data: AssessmentData, isCritical: boolean) => {
     setAssessmentData(data);
     if (isCritical) {
       navigate('crisis');
     } else {
       navigate('results');
     }
-  };
+  }, [navigate]);
 
-  const handleUpdateUser = (data: any) => {
-    setUserData({ ...userData, ...data });
-  };
+  const handleUpdateUser = useCallback((data: UserData) => {
+    setUserData((previous) => ({ ...previous, ...data }));
+  }, []);
 
-  const handleStartSession = (session: Session) => {
+  const handleStartSession = useCallback((session: Session) => {
     setActiveSession(session);
     navigate('assessment/run');
-  };
+  }, [navigate]);
 
-  const handleSessionComplete = (answers: any) => {
+  const handleSessionComplete = useCallback((answers: unknown) => {
     if (activeSession) {
       storageService.saveHistory({
         sessionTitle: activeSession.title,
@@ -311,31 +344,38 @@ const App: React.FC = () => {
       });
     }
     navigate('full-assessment');
-  };
+  }, [activeSession, navigate]);
 
-  const handleViewHistory = (record: any) => {
+  const handleViewHistory = useCallback((record: HistoryRecord) => {
     setViewingHistoryRecord(record);
     navigate('assessment/view');
-  };
+  }, [navigate]);
 
-  const handleCreateSession = () => {
+  const handleCreateSession = useCallback(() => {
     setEditingSession(undefined);
     navigate('therapist/builder');
-  };
+  }, [navigate]);
 
-  const handleEditSession = (session: Session) => {
+  const handleEditSession = useCallback((session: Session) => {
     setEditingSession(session);
     navigate('therapist/builder');
-  };
+  }, [navigate]);
 
-  const handlePreviewSession = (session: Session) => {
+  const handlePreviewSession = useCallback((session: Session) => {
     setActiveSession(session);
     navigate('therapist/preview');
-  };
+  }, [navigate]);
 
-  const handleFloatingCloudClick = () => {
-    window.location.hash = '#/free-tools';
-  };
+  const handleFloatingCloudClick = useCallback(() => {
+    navigate('free-tools');
+  }, [navigate]);
+
+  const handleFloatingCloudKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleFloatingCloudClick();
+    }
+  }, [handleFloatingCloudClick]);
 
   return (
     <div
@@ -349,8 +389,12 @@ const App: React.FC = () => {
     >
       {/* FLOATING CLOUD CTA (PERSISTENT IN APP, VISIBLE ONLY ON HOME) */}
       <div
-        className={`fixed top-40 md:top-24 right-0 md:right-0 lg:right-0 z-[2500] cursor-pointer group flex flex-col items-center animate-float transition-opacity duration-300 ${(currentView === 'home') ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed top-48 md:top-32 right-0 md:right-0 lg:right-0 z-[2500] cursor-pointer group flex flex-col items-center animate-float transition-opacity duration-300 ${(currentView === 'home') ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={handleFloatingCloudClick}
+        onKeyDown={handleFloatingCloudKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-label="Open free tools"
         style={{ animationDuration: '6s' }}
       >
         <div className="relative w-[130px] md:w-[170px] lg:w-[370px] hover:scale-105 transition-transform duration-500 filter drop-shadow-2xl">
@@ -405,11 +449,10 @@ const App: React.FC = () => {
             <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#FDFCF8] via-[#FDFCF8]/80 to-transparent dark:from-[#030712] dark:via-[#030712]/95 transition-all duration-500 z-10"></div>
             <BackgroundParticles />
 
+            <Header
+              onLoginClick={() => setShowLandingLogin(true)}
+            />
             <div className="landing-content relative z-20 w-full max-w-[1400px] mx-auto px-4 py-4 pb-32 md:pb-48">
-              <Header
-                onLoginClick={() => setShowLandingLogin(true)}
-                onCertificationsClick={() => { window.location.hash = '#/certifications/'; }}
-              />
               <Hero onStartClick={handleStartAssessment} />
             </div>
           </div>
@@ -455,14 +498,24 @@ const App: React.FC = () => {
       {currentView === 'ar-player' && <ARThemePlayer themeId={currentARThemeId} />}
       {currentView === 'ar-real-room' && <ARRealRoomPlayer />}
       {currentView === 'free-tools' && <FreeToolsPage />}
-      {currentView === 'role-selection' && <RoleSelection />}
+
       {currentView === 'profile-setup' && <ProfileSetup />}
-      {currentView === 'therapist-registration' && <TherapistRegistration />}
-      {currentView === 'therapist-registration-flow' && <TherapistRegistrationFlow onBack={() => navigate('therapist-registration')} />}
-      {currentView === 'therapist-matching' && <MatchingApp />}
-      {currentView === 'certifications' && <CertificationApp />}
+      {currentView === 'therapist-registration-flow' && <TherapistRegistrationFlow onBack={() => navigate('landing')} />}
+      {currentView === 'therapist-matching' && <MatchingApp basename={`/${i18n.language}/therapist-matching`} />}
       {currentView === 'cbt-sessions' && <CBTApp onBack={() => navigate('home')} />}
       {currentView === 'meera-chat' && <MeeraApp onBack={() => navigate('home')} />}
+      {currentView === 'group-sessions' && <GroupSessionsApp onBack={() => navigate('home')} />}
+      {currentView === 'payment-choice' && <PaymentOutcomeChoice />}
+      {currentView === 'payment-landing' && <PaymentGatewayLanding />}
+      {currentView === 'payment-method' && <PaymentMethodSelection />}
+      {currentView === 'payment-success' && <PaymentSuccess />}
+
+      {currentView === 'payment-failure' && <PaymentFailure />}
+      {currentView === 'certification-platform' && <CertificationPlatform basePath={`/${i18n.language}/certification-platform`} />}
+      {currentView === 'school-wellness' && <SchoolWellnessApp onBack={() => navigate('home')} />}
+      {currentView === 'corporate-wellness' && <CorporateWellnessApp onBack={() => navigate('home')} />}
+      {currentView === 'video-session' && <SingleMeetingJitsi onBack={() => navigate('therapist-matching/patient')} onHome={() => navigate('home')} />}
+
     </div>
   );
 };

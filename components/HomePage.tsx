@@ -2,21 +2,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { storageService } from '../utils/storageService';
 import { useTranslation } from 'react-i18next';
-import { LanguageSwitcher } from './LanguageSwitcher';
 import { QuickLaunchDock } from './QuickLaunchDock';
+import { Header } from './Header';
 
 // --- ICONS ---
 const CloseIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
-);
-const SunIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="#FDB813" stroke="#FDB813" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>
-);
-const MoonIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="black" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
-);
-const MenuIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
 );
 
 // --- SOCIAL LOGOS (Inline for Reliability) ---
@@ -47,85 +38,18 @@ const FacebookLogo = () => (
   </svg>
 );
 
-// --- NEW COMPONENTS ---
-const MobileMenuItem = ({ icon, label, onClick }: { icon: string, label: string, onClick?: () => void }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className="flex items-center gap-3 p-3 w-full text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-  >
-    <span className="text-xl">{icon}</span>
-    <span className="text-[1.05rem] font-medium text-slate-700 dark:text-slate-200">{label}</span>
-  </button>
-);
-
-const DropdownButton = ({ title, children }: { title: string, children?: React.ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div
-      className="relative group"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      <button className="flex items-center gap-1 hover:text-[#1FA2DE] dark:hover:text-sky-400 transition-colors py-2">
-        {title}
-        <span className={`text-xs transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
-      </button>
-      <div className={`absolute top-full left-0 bg-white dark:bg-[#1E293B] shadow-xl rounded-2xl p-2 min-w-[240px] border border-slate-100 dark:border-slate-700 transition-all duration-300 origin-top-left z-50 ${isOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
-        {children}
-      </div>
-    </div>
-  );
-};
-
-const DropdownItem = ({ icon, label, onClick }: { icon: string, label: string, onClick?: () => void }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className="flex items-center gap-3 px-5 py-3 w-full text-left text-[0.95rem] font-medium text-[#2E3A48] dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-[#0A3A78] dark:hover:text-white rounded-xl transition-all group"
-  >
-    <span className="text-lg group-hover:scale-110 transition-transform">{icon}</span>
-    <span>{label}</span>
-  </button>
-);
-
-// NEW: Nested Dropdown Item for hover submenus
-const NestedDropdownItem = ({ icon, label, children }: { icon: string, label: string, children?: React.ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div
-      className="relative group/nested w-full"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      <button className="flex items-center gap-3 px-5 py-3 w-full text-left text-[0.95rem] font-medium text-[#2E3A48] dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-[#0A3A78] dark:hover:text-white rounded-xl transition-all">
-        <span className="text-lg">{icon}</span>
-        <span className="flex-1">{label}</span>
-        {children && <span className="text-xs text-slate-400">▶</span>}
-      </button>
-
-      {/* Submenu container */}
-      {children && (
-        <div className={`absolute left-[95%] top-0 bg-white dark:bg-[#1E293B] shadow-xl rounded-2xl p-2 min-w-[240px] border border-slate-100 dark:border-slate-700 transition-all duration-200 z-[60] origin-top-left ${isOpen ? 'opacity-100 visible translate-x-0' : 'opacity-0 invisible -translate-x-2'}`}>
-          {children}
-        </div>
-      )}
-    </div>
-  );
-};
-
 interface SolutionCardProps {
   title: string;
   subtitle?: string;
   icon: string;
   delay: string;
+  onClick?: () => void;
 }
 
-const SolutionCard: React.FC<SolutionCardProps> = ({ title, subtitle, icon, delay }) => (
+const SolutionCard: React.FC<SolutionCardProps> = ({ title, subtitle, icon, delay, onClick }) => (
   <div
-    className="reveal-on-scroll group bg-white dark:bg-[#111827] p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] hover:-translate-y-2 transition-all duration-300"
+    onClick={onClick}
+    className={`reveal-on-scroll group bg-white dark:bg-[#111827] p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] hover:-translate-y-2 transition-all duration-300 ${onClick ? 'cursor-pointer' : ''}`}
     style={{ transitionDelay: delay }}
   >
     <div className="w-16 h-16 bg-blue-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -142,7 +66,6 @@ const SolutionCard: React.FC<SolutionCardProps> = ({ title, subtitle, icon, dela
 export const HomePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loginStatus, setLoginStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [isDark, setIsDark] = useState(false);
 
@@ -153,6 +76,7 @@ export const HomePage: React.FC = () => {
   const [phoneLanguage, setPhoneLanguage] = useState('en');
   const [countdown, setCountdown] = useState(0);
   const [loginError, setLoginError] = useState('');
+  const [selectedRole, setSelectedRole] = useState<'patient' | 'therapist' | null>(null);
 
   // Modal flow state
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
@@ -222,6 +146,28 @@ export const HomePage: React.FC = () => {
     }
   };
 
+  const handleSuccessRedirect = () => {
+    setIsLoginOpen(false);
+
+    // Reset login state for next time
+    setTimeout(() => {
+      setLoginStatus('idle');
+      setLoginView('main');
+      setPhoneNumber('');
+      setOtp('');
+      setLoginError('');
+      setCountdown(0);
+    }, 300);
+
+    // Redirect based on role
+    if (selectedRole === 'therapist') {
+      window.location.hash = `#/${i18n.language}/landing`;
+    } else {
+      // Default to profile setup (User flow)
+      window.location.hash = `#/${i18n.language}/profile-setup`;
+    }
+  };
+
   const handleCloseLogin = () => {
     setIsLoginOpen(false);
     // Reset login state after transition
@@ -239,9 +185,9 @@ export const HomePage: React.FC = () => {
     setLoginStatus('loading');
     setTimeout(() => {
       setLoginStatus('success');
-      // Auto-close logic: Wait 1.5s then close
+      // Auto-close logic: Wait 1.5s then redirect
       setTimeout(() => {
-        handleCloseLogin();
+        handleSuccessRedirect();
       }, 1500);
     }, 1500);
   };
@@ -282,7 +228,7 @@ export const HomePage: React.FC = () => {
     setTimeout(() => {
       setLoginStatus('success');
       setTimeout(() => {
-        handleCloseLogin();
+        handleSuccessRedirect();
       }, 1500);
     }, 1500);
   };
@@ -303,29 +249,21 @@ export const HomePage: React.FC = () => {
       e.preventDefault();
       e.stopPropagation();
     }
-    window.location.hash = '#/subscribe';
+    window.location.hash = `#/${i18n.language}/subscribe`;
   };
 
   const navigateToSoundTherapy = () => {
-    window.location.hash = '#/sound-therapy';
+    window.location.hash = `#/${i18n.language}/sound-therapy`;
   };
 
   const navigateToARThemedRoom = () => {
     window.location.hash = `#/${i18n.language}/ar-themed-room`;
   };
 
-  const navigateToCertifications = () => {
-    window.location.hash = '#/certifications/';
-  };
-
-  const navigateToCBTSessions = () => {
-    window.location.hash = `#/${i18n.language}/cbt-sessions`;
-  };
-
   const handleOpenCheckIn = () => {
     const alreadyDone = storageService.hasCheckedInToday();
     if (alreadyDone) {
-      window.location.hash = '#/streaks';
+      window.location.hash = `#/${i18n.language}/streaks`;
       return;
     } else {
       setCheckInState('form');
@@ -357,15 +295,7 @@ export const HomePage: React.FC = () => {
     <div className="font-sans text-[#1A1A1A] bg-[#FDFCF8] selection:bg-blue-100 selection:text-[#0A3A78] overflow-x-hidden transition-colors duration-500 dark:bg-[#030712] dark:text-slate-100">
 
       {/* QUICK LAUNCH DOCK INTEGRATION */}
-      {/* Hidden when mobile menu is open to prevent overlap */}
-      <div className={isMobileMenuOpen ? 'hidden' : ''}>
-        <QuickLaunchDock />
-      </div>
-
-      {/* ABSOLUTE NAZAR BOTTU - TOP RIGHT CORNER OF PAGE (Hidden on mobile as it's in nav bar) */}
-      <div className="hidden md:block absolute top-6 right-6 z-[2000] select-none pointer-events-none drop-shadow-sm text-slate-900 dark:text-white">
-        <span className="text-[28px] leading-none">🧿</span>
-      </div>
+      <QuickLaunchDock />
 
       {/* STREAK RISK BANNER */}
       {isStreakAtRisk && (
@@ -377,7 +307,7 @@ export const HomePage: React.FC = () => {
         </div>
       )}
 
-      {/* LOGIN MODAL - RE-DESIGNED FOR PREMIUM FEEL (CALM.COM STYLE) */}
+      {/* LOGIN MODAL */}
       {isLoginOpen && (
         <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" onClick={handleCloseLogin}></div>
@@ -472,7 +402,7 @@ export const HomePage: React.FC = () => {
                     </form>
 
                     <div className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
-                      Don't have an account? <button onClick={() => { handleCloseLogin(); window.location.hash = '#/subscribe'; }} className="text-[#0A3A78] dark:text-sky-400 font-bold hover:underline transition-colors">Sign up</button>
+                      Don't have an account? <button onClick={() => { handleCloseLogin(); window.location.hash = `#/${i18n.language}/subscribe`; }} className="text-[#0A3A78] dark:text-sky-400 font-bold hover:underline transition-colors">Sign up</button>
                     </div>
                   </div>
                 )}
@@ -669,96 +599,7 @@ export const HomePage: React.FC = () => {
         </div>
       )}
 
-      {/* MOBILE MENU OVERLAY */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[3000] flex flex-col bg-white dark:bg-[#030712] animate-fade-in transition-colors duration-300">
-          <div className="flex items-center justify-between px-6 py-6 border-b border-slate-100 dark:border-slate-800">
-            <div className="font-serif text-[1.8rem] font-bold text-[#0A3A78] dark:text-white tracking-tight">
-              {t('logo_text')}<span className="text-[#1FA2DE]">360</span>
-            </div>
-            <button type="button" onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><CloseIcon /></button>
-          </div>
-          <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8">
-            <div>
-              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4">{t('solutions', 'Select Your Role')}</h4>
-              <div className="grid grid-cols-1 gap-2">
-                <MobileMenuItem icon="🧘" label={t('mental_health_seekers', 'Mental Health Seekers')} />
-                <MobileMenuItem icon="👩‍⚕️" label={t('providers', 'Providers')} />
-                <MobileMenuItem icon="🏢" label={t('corporates', 'Corporates')} />
-
-                {/* Changed Education to Educational Institutes */}
-                <MobileMenuItem icon="🎓" label={t('education', 'Educational Institutes')} />
-
-                {/* NEW Mobile Menu Items */}
-                <MobileMenuItem icon="🤝" label={t('agencies', 'Agencies')} />
-                <MobileMenuItem icon="🏥" label={t('healthcare_institutes', 'Healthcare Institutes')} />
-                <MobileMenuItem icon="🛡️" label={t('insurance_players', 'Insurance Players')} />
-                <MobileMenuItem icon="🏛️" label={t('government_agencies', 'Government Agencies')} />
-              </div>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4">{t('resources', 'Therapy Hub')}</h4>
-              <div className="grid grid-cols-1 gap-2">
-                <button
-                  onClick={() => { setIsMobileMenuOpen(false); navigateToSoundTherapy(); }}
-                  className="flex items-center gap-3 p-3 w-full text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <span className="text-xl">🔊</span>
-                  <span className="text-[1.05rem] font-medium text-slate-700 dark:text-slate-200">{t('resource_sound', 'Sound Therapy')}</span>
-                </button>
-                <button
-                  onClick={() => { setIsMobileMenuOpen(false); navigateToARThemedRoom(); }}
-                  className="flex items-center gap-3 p-3 w-full text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <span className="text-xl">👓</span>
-                  <span className="text-[1.05rem] font-medium text-slate-700 dark:text-slate-200">{t('resource_ar', 'AR Themed Room')}</span>
-                </button>
-                <MobileMenuItem icon="🐕" label={t('resource_pet', 'Pet Therapy')} />
-                <button
-                  onClick={() => { setIsMobileMenuOpen(false); window.location.hash = '#/meera-chat'; }}
-                  className="flex items-center gap-3 p-3 w-full text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <span className="text-xl">🤖</span>
-                  <span className="text-[1.05rem] font-medium text-slate-700 dark:text-slate-200">{t('resource_bot', 'Therapist Bot')}</span>
-                </button>
-                <MobileMenuItem icon="👥" label={t('resource_group', 'Group Sessions')} />
-                <MobileMenuItem icon="🌿" label={t('resource_ayurveda', 'Ayurveda')} />
-                <MobileMenuItem icon="🛌" label={t('resource_sleep', 'Sleep Care')} />
-                <button
-                  onClick={() => { setIsMobileMenuOpen(false); window.location.hash = `#/${i18n.language}/developer-api-resources`; }}
-                  className="flex items-center gap-3 p-3 w-full text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <span className="text-xl">🔌</span>
-                  <span className="text-[1.05rem] font-medium text-slate-700 dark:text-slate-200">{t('resource_dev_api', 'API Resources')}</span>
-                </button>
-                {/* NEW ITEMS */}
-                <MobileMenuItem
-                  icon="📜"
-                  label="Certifications"
-                  onClick={() => { setIsMobileMenuOpen(false); navigateToCertifications(); }}
-                />
-                <MobileMenuItem
-                  icon="🧠"
-                  label="CBT Sessions"
-                  onClick={() => { setIsMobileMenuOpen(false); navigateToCBTSessions(); }}
-                />
-              </div>
-            </div>
-            <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <button type="button" className="block text-xl font-bold text-[#0A3A78] dark:text-white text-left">{t('about_us', 'About Us')}</button>
-              <button type="button" onClick={(e) => { setIsMobileMenuOpen(false); navigateToSubscribe(e); }} className="block text-xl font-bold text-[#0A3A78] dark:text-white text-left">{t('subscribe', 'Subscribe')}</button>
-              <button type="button" className="flex items-center gap-3 text-xl font-bold text-[#0A3A78] dark:text-white cursor-default">
-                <span>🛒</span> {t('nav_shopping_cart', 'Shopping Cart')}
-              </button>
-            </div>
-          </div>
-          <div className="p-6 border-t border-slate-100 dark:border-slate-800">
-            <button type="button" onClick={() => { setIsMobileMenuOpen(false); setIsLoginOpen(true); }} className={gradientBtnClass + " w-full py-4 text-lg"}>{t('login', 'Log In')}</button>
-          </div>
-        </div>
-      )}
-
-      {/* HERO & NAV */}
+      {/* HERO & NAV - HEADER REPLACEMENT */}
       <div
         className="relative w-full min-h-[105vh] md:min-h-[95vh] flex flex-col transition-all duration-700 z-[100]"
         style={{
@@ -770,133 +611,15 @@ export const HomePage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#E0F2FE]/40 via-transparent to-[#FDFCF8] dark:from-[#030712]/80 dark:to-[#030712] pointer-events-none z-0"></div>
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#FDFCF8] via-[#FDFCF8]/90 to-transparent dark:from-[#030712] dark:via-[#030712]/90 pointer-events-none z-0"></div>
 
-        <nav className="relative z-[1500] flex items-start justify-between px-6 md:px-10 py-6 max-w-[1400px] mx-auto w-full">
-          <div className="flex flex-col items-center gap-3">
-            <div className="font-serif text-[1.8rem] font-bold text-[#0A3A78] dark:text-white tracking-tight cursor-pointer">
-              {t('logo_text')}<span className="text-[#1FA2DE]">360</span>
-            </div>
-            {/* Language Switcher moved here on large screens, handled in mobile menu otherwise */}
-            <div className="hidden lg:block">
-              <LanguageSwitcher />
-            </div>
-          </div>
+        {/* USE SHARED HEADER COMPONENT EXACTLY AS IN LANDING PAGE */}
+        <div className="relative z-[1500] w-full">
+          <Header onLoginClick={(role) => {
+            setSelectedRole(role as 'patient' | 'therapist' | null);
+            setIsLoginOpen(true);
+          }} />
+        </div>
 
-          <div className="hidden lg:flex items-center gap-6 xl:gap-10 font-medium text-[#0A3A78] dark:text-white text-[1.05rem] pt-2">
-            <DropdownButton title={t('solutions', 'Select Your Role')}>
-              {/* Increased min-w to handle longer text and more items properly */}
-              <div className="grid grid-cols-2 min-w-[600px] p-2">
-                {/* Changed Item to NestedDropdownItem */}
-                <NestedDropdownItem
-                  icon="🧘"
-                  label={t('mental_health_seekers', 'Mental Health Seekers')}
-                >
-                  <div className="flex flex-col gap-1 p-1">
-                    <button className="text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 transition-colors">
-                      {t('psychiatrist', 'Psychiatrist')}
-                    </button>
-                    <button className="text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 transition-colors">
-                      {t('psychologist', 'Psychologist')}
-                    </button>
-                    <button className="text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 transition-colors">
-                      {t('nlp_coach', 'NLP Coach')}
-                    </button>
-                    <button className="text-left px-4 py-2 hover:bg-sky-50 dark:hover:bg-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 transition-colors">
-                      {t('specialized_therapist', 'Specialized Therapist')}
-                    </button>
-                  </div>
-                </NestedDropdownItem>
-
-                <DropdownItem icon="👩‍⚕️" label={t('providers', 'Providers')} />
-                <DropdownItem icon="🏢" label={t('corporates', 'Corporates')} />
-                {/* Changed Education to Educational Institutes */}
-                <DropdownItem icon="🎓" label={t('education', 'Educational Institutes')} />
-
-                {/* NEW ITEMS */}
-                <DropdownItem icon="🤝" label={t('agencies', 'Agencies')} />
-                <DropdownItem icon="🏥" label={t('healthcare_institutes', 'Healthcare Institutes')} />
-                <DropdownItem icon="🛡️" label={t('insurance_players', 'Insurance Players')} />
-                <DropdownItem icon="🏛️" label={t('government_agencies', 'Government Agencies')} />
-              </div>
-            </DropdownButton>
-            <DropdownButton title={t('resources', 'Therapy Hub')}>
-              <div className="grid grid-cols-2 min-w-[500px] p-2">
-                <button
-                  onClick={navigateToSoundTherapy}
-                  className="flex items-center gap-3 px-5 py-3 w-full text-left text-[0.95rem] font-medium text-[#2E3A48] dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-[#0A3A78] dark:hover:text-white rounded-xl transition-all"
-                >
-                  <span className="text-lg">🔊</span> <span>{t('resource_sound', 'Sound Therapy')}</span>
-                </button>
-                <button
-                  onClick={navigateToARThemedRoom}
-                  className="flex items-center gap-3 px-5 py-3 w-full text-left text-[0.95rem] font-medium text-[#2E3A48] dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-[#0A3A78] dark:hover:text-white rounded-xl transition-all"
-                >
-                  <span className="text-lg">👓</span> <span>{t('resource_ar', 'AR Themed Room')}</span>
-                </button>
-                <DropdownItem icon="🐕" label={t('resource_pet', 'Pet Therapy')} />
-                <DropdownItem icon="🤖" label={t('resource_bot', 'Therapist Bot')} onClick={() => window.location.hash = '#/meera-chat'} />
-                <DropdownItem icon="👥" label={t('resource_group', 'Group Sessions')} />
-                <DropdownItem icon="🌿" label={t('resource_ayurveda', 'Ayurveda')} />
-                <DropdownItem icon="🛌" label={t('resource_sleep', 'Sleep Care')} />
-                <button
-                  onClick={() => window.location.hash = `#/${i18n.language}/developer-api-resources`}
-                  className="flex items-center gap-3 px-5 py-3 w-full text-left text-[0.95rem] font-medium text-[#2E3A48] dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-[#0A3A78] dark:hover:text-white rounded-xl transition-all"
-                >
-                  <span className="text-lg">🔌</span> <span>{t('resource_dev_api', 'API Resources')}</span>
-                </button>
-                {/* NEW ITEMS */}
-                <DropdownItem icon="📜" label="Certifications" onClick={navigateToCertifications} />
-                <DropdownItem icon="🧠" label="CBT Sessions" onClick={navigateToCBTSessions} />
-              </div>
-            </DropdownButton>
-            <button type="button" className="px-4 py-2 rounded-full hover:bg-white/40 dark:hover:bg-slate-800/40 transition-all duration-300">{t('about_us', 'About Us')}</button>
-            <button type="button" onClick={navigateToSubscribe} className={gradientBtnClass}>{t('subscribe', 'Subscribe')}</button>
-          </div>
-
-          <div className="flex items-center gap-3 md:gap-4 xl:gap-5">
-            {/* Mobile-only language switcher just below or near logo if needed, but typically inside menu is cleaner. Keeping it under logo in column flex above for mobile. */}
-
-            <div className="flex items-center gap-3 md:gap-4">
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className="p-2.5 rounded-full text-[#0A3A78] dark:text-slate-200 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all backdrop-blur-md border border-white/20 dark:border-slate-700 shadow-sm"
-              >
-                {isDark ? <SunIcon /> : <MoonIcon />}
-              </button>
-
-              {/* Mobile Nazarbattu Icon - Positioned to the left of the menu */}
-              <div className="md:hidden select-none pointer-events-none drop-shadow-sm text-2xl text-slate-900 dark:text-white">
-                🧿
-              </div>
-
-              <button type="button" onClick={() => setIsLoginOpen(true)} className={`${gradientBtnClass} hidden md:flex`}> {t('login', 'Log In')} </button>
-
-              {/* Shopping Cart Icon */}
-              <button
-                type="button"
-                className="hidden lg:block text-[#0A3A78] dark:text-white text-2xl hover:scale-110 transition-transform p-2 relative cursor-default"
-              >
-                🛒
-              </button>
-
-              {/* Mobile Sandwich Menu - Explicitly on the far right */}
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden text-[#0A3A78] dark:text-white p-2 hover:bg-white/30 dark:hover:bg-slate-800/50 rounded-full transition-colors"
-              >
-                <MenuIcon />
-              </button>
-            </div>
-          </div>
-        </nav>
-
-        <div className="relative z-20 flex-1 flex flex-col justify-center items-center text-center px-4 max-w-5xl mx-auto mt-4 pb-48 md:pb-64">
-
-          {/* Mobile Language Switcher below logo for easy access - ADDED MT-2 FOR SPACING */}
-          <div className="lg:hidden mb-6 mt-2">
-            <LanguageSwitcher />
-          </div>
+        <div className="relative z-20 flex-1 flex flex-col justify-center items-center text-center px-4 max-w-5xl mx-auto mt-16 md:mt-32 pb-48 md:pb-64">
 
           <div className="hero-box relative z-10 p-8 rounded-[3rem]">
             <h1 className="font-serif text-[clamp(2.5rem,5.5vw,5rem)] font-normal text-[#0A3A78] dark:text-white leading-[1.2] mb-8 drop-shadow-lg tracking-tight">
@@ -905,13 +628,13 @@ export const HomePage: React.FC = () => {
             <p className="text-[1.15rem] md:text-[1.4rem] text-[#2E3A48] dark:text-slate-300 leading-[1.65] max-w-4xl mx-auto mb-14 font-medium opacity-90 drop-shadow-sm">
               {t('home_hero_subtitle')}
             </p>
-            <button type="button" onClick={() => window.location.hash = '#/onboarding/name'} className="px-16 py-6 text-[1.3rem] rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white font-bold shadow-[0_10px_30px_rgba(30,89,255,0.4)] hover:shadow-xl hover:-translate-y-1 hover:brightness-105 transition-all uppercase tracking-wider"> {t('start_checkin')} </button>
+            <button type="button" onClick={() => window.location.hash = `#/${i18n.language}/onboarding/name`} className="px-16 py-6 text-[1.3rem] rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white font-bold shadow-[0_10px_30px_rgba(30,89,255,0.4)] hover:shadow-xl hover:-translate-y-1 hover:brightness-105 transition-all uppercase tracking-wider"> {t('start_checkin')} </button>
           </div>
 
           {/* FLOATING SHIP - REDESIGNED TO MATCH USER'S MOTORBOAT IMAGE */}
           <div
             onClick={handleOpenCheckIn}
-            className="absolute -bottom-16 right-0 md:bottom-52 md:-right-12 lg:-right-16 z-[100] cursor-pointer group"
+            className="absolute bottom-28 right-0 md:bottom-56 md:-right-12 lg:-right-16 z-[100] cursor-pointer group"
           >
             {/* Subtle Floating Animation */}
             <div className="animate-float flex flex-col items-center">
@@ -984,8 +707,20 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             <SolutionCard title={t('wellness_seekers')} icon="🧘‍♀️" delay="0ms" />
             <SolutionCard title={t('providers')} subtitle={t('sol_sub_providers')} icon="👩‍⚕️" delay="100ms" />
-            <SolutionCard title={t('corporates')} subtitle={t('sol_sub_corporates')} icon="🏢" delay="200ms" />
-            <SolutionCard title={t('education')} subtitle={t('sol_sub_education')} icon="🎓" delay="300ms" />
+            <SolutionCard
+              title={t('corporates')}
+              subtitle={t('sol_sub_corporates')}
+              icon="🏢"
+              delay="200ms"
+              onClick={() => window.location.hash = `#/${i18n.language}/corporate-wellness`}
+            />
+            <SolutionCard
+              title={t('education')}
+              subtitle={t('sol_sub_education')}
+              icon="🎓"
+              delay="300ms"
+              onClick={() => window.location.hash = `#/${i18n.language}/school-wellness`}
+            />
           </div>
         </div>
       </section>
@@ -997,7 +732,7 @@ export const HomePage: React.FC = () => {
             <div className="w-24 h-24 bg-blue-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-5xl mb-10"> 🤖 </div>
             <h3 className="font-serif text-[2.4rem] text-[#0A3A78] dark:text-white mb-6">{t('virtual_bot')}</h3>
             <p className="text-[#475569] dark:text-slate-400 text-[1.15rem] mb-12"> {t('virtual_bot_desc')} </p>
-            <button type="button" onClick={() => window.location.hash = '#/meera-chat'} className="px-10 py-5 rounded-full bg-white dark:bg-slate-800 text-[#1E59FF] dark:text-sky-400 font-bold border-2 border-blue-100 dark:border-slate-700 hover:bg-[#1E59FF] hover:text-white transition-all"> {t('chat_now')} </button>
+            <button type="button" className="px-10 py-5 rounded-full bg-white dark:bg-slate-800 text-[#1E59FF] dark:text-sky-400 font-bold border-2 border-blue-100 dark:border-slate-700 hover:bg-[#1E59FF] hover:text-white transition-all"> {t('chat_now')} </button>
           </div>
           <div className="reveal-on-scroll group bg-white dark:bg-[#111827] rounded-[40px] p-10 md:p-14 border border-slate-100 dark:border-slate-800 shadow-sm transition-all duration-500">
             <div className="w-24 h-24 bg-amber-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-5xl mb-10"> 🐕 </div>
@@ -1063,7 +798,7 @@ export const HomePage: React.FC = () => {
           <div className="flex flex-col items-center gap-6">
             <button
               type="button"
-              onClick={() => window.location.hash = '#/onboarding/name'}
+              onClick={() => window.location.hash = `#/${i18n.language}/onboarding/name`}
               className="px-16 py-6 rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white text-xl font-bold shadow-[0_15px_35px_-5px_rgba(30,89,255,0.4)] hover:shadow-[0_25px_50px_-10px_rgba(30,89,255,0.5)] hover:-translate-y-1 hover:brightness-105 transition-all duration-300 ring-4 ring-blue-500/10"
             >
               {t('begin_journey')}

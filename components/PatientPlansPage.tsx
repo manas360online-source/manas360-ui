@@ -1,10 +1,24 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { storageService } from '../utils/storageService';
 import { SubscriptionSuccessModal } from './SubscriptionSuccessModal';
 
 export const PatientPlansPage: React.FC = () => {
   const [successData, setSuccessData] = useState<{ category: string; planName: string; price: string } | null>(null);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    const queryString = hash.split('?')[1] || '';
+    const params = new URLSearchParams(queryString);
+
+    if (params.get('success') === 'true') {
+      const planName = params.get('planName');
+      const price = params.get('price');
+      if (planName && price) {
+        setSuccessData({ category: 'Patients', planName, price });
+      }
+    }
+  }, []);
 
   const handleBack = () => {
     window.location.hash = '#/subscribe';
@@ -15,7 +29,9 @@ export const PatientPlansPage: React.FC = () => {
   };
 
   const handleSubscribe = (planName: string, price: string) => {
-    setSuccessData({ category: 'Patients', planName, price });
+    const currentPath = window.location.hash.split('?')[0];
+    const returnUrl = `${currentPath}?planName=${encodeURIComponent(planName)}&price=${encodeURIComponent(price)}`;
+    window.location.hash = `#/payment-landing?planName=${encodeURIComponent(planName)}&price=${encodeURIComponent(price)}&returnUrl=${encodeURIComponent(returnUrl)}`;
   };
 
   const onConfirmOk = () => {
@@ -35,15 +51,15 @@ export const PatientPlansPage: React.FC = () => {
     <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-x-hidden dark:bg-[#030712]">
       {/* Success Modal */}
       {successData && (
-        <SubscriptionSuccessModal 
-          category={successData.category} 
-          planName={successData.planName} 
-          onOk={onConfirmOk} 
+        <SubscriptionSuccessModal
+          category={successData.category}
+          planName={successData.planName}
+          onOk={onConfirmOk}
         />
       )}
 
       {/* Background Image logic */}
-      <div 
+      <div
         className="absolute inset-0 z-0 bg-[#EBF5FF] dark:bg-[#030712]"
         style={{
           backgroundImage: 'url("https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=2560&auto=format&fit=crop")',
@@ -55,20 +71,20 @@ export const PatientPlansPage: React.FC = () => {
 
       {/* Glass Container - Adjusted for mobile growth */}
       <div className="relative z-10 w-full max-w-[1180px] bg-white/80 dark:bg-[#0A0F1D]/90 backdrop-blur-3xl rounded-[32px] sm:rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] border border-white/60 dark:border-slate-800/80 flex flex-col transition-all duration-500 my-8 lg:my-0">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center px-6 md:px-10 py-4 md:py-4 border-b border-slate-200/50 dark:border-slate-800/50 gap-4">
           <button onClick={handleBack} className="flex items-center gap-2 text-[#1E59FF] dark:text-white font-bold text-[0.9rem] sm:text-[1rem] hover:opacity-75 transition-all self-start sm:self-center">
             <span className="text-xl">←</span> Back
           </button>
-          
+
           <h1 className="font-serif text-lg sm:text-xl font-bold text-[#0A3A78] dark:text-white tracking-widest uppercase text-center">
             PATIENTS
           </h1>
 
           <div className="flex items-center gap-4 self-end sm:self-center">
             <button onClick={handleBilling} className="px-5 py-2 rounded-xl border border-[#0A3A78]/10 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-[#0A3A78] dark:text-sky-300 font-bold text-[0.65rem] sm:text-[0.7rem] flex items-center gap-2 hover:bg-white dark:hover:bg-slate-700 transition-all whitespace-nowrap">
-               <span className="text-base">📋</span> Billing History
+              <span className="text-base">📋</span> Billing History
             </button>
 
             {/* Nazar Bottu / Evil Eye Icon */}
@@ -80,8 +96,8 @@ export const PatientPlansPage: React.FC = () => {
 
         {/* Content - Removed justify-center on mobile to prevent clipping and added pt-8 for clearance */}
         <div className="pt-8 pb-6 px-4 sm:pt-10 sm:px-6 lg:p-8 flex flex-col lg:flex-row gap-4 md:gap-5 lg:justify-center items-stretch max-h-[80vh] lg:max-h-none overflow-y-auto lg:overflow-visible">
-          
-          <PlanOptionCard 
+
+          <PlanOptionCard
             title="Healer"
             items={[
               "Assessment – AI",
@@ -98,7 +114,7 @@ export const PatientPlansPage: React.FC = () => {
             onSubscribe={() => handleSubscribe('Healer', '₹499/session')}
           />
 
-          <PlanOptionCard 
+          <PlanOptionCard
             title="Buddy"
             items={[
               "Assessment – AI",
@@ -117,7 +133,7 @@ export const PatientPlansPage: React.FC = () => {
             onSubscribe={() => handleSubscribe('Buddy', '₹199/month')}
           />
 
-          <PlanOptionCard 
+          <PlanOptionCard
             title="Guru"
             items={[
               "Assessment – AI",
@@ -154,7 +170,7 @@ interface PlanOptionCardProps {
 const PlanOptionCard: React.FC<PlanOptionCardProps> = ({ title, items, pricing, btnClass, onSubscribe }) => (
   <div className="flex-1 bg-white dark:bg-[#0F172A] p-5 sm:p-6 rounded-[24px] sm:rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col hover:shadow-lg transition-all">
     <h3 className="font-serif text-[1.5rem] sm:text-[1.8rem] md:text-[2rem] font-bold text-[#0A3A78] dark:text-white mb-3 sm:mb-4 text-center">{title}</h3>
-    
+
     <div className="flex-grow">
       <ul className="space-y-1.5 mb-6">
         {items.map((item, i) => (

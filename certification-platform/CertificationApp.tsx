@@ -15,15 +15,19 @@ const MyCertificationsPage = React.lazy(() => import('./pages/CertificationMyCer
 
 const LoadingFallback = () => (
   <div className="max-w-7xl mx-auto px-4 py-24 grid md:grid-cols-3 gap-8">
-     <CardSkeleton />
-     <CardSkeleton />
-     <CardSkeleton />
+    <CardSkeleton />
+    <CardSkeleton />
+    <CardSkeleton />
   </div>
 );
 
-const App: React.FC = () => {
+interface AppProps {
+  basePath?: string;
+}
+
+const App: React.FC<AppProps> = ({ basePath = '/' }) => {
   return (
-    <Router basename="/certifications">
+    <Router basename={basePath}>
       <Layout>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>

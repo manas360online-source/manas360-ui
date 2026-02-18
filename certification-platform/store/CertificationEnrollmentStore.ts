@@ -9,13 +9,15 @@ interface EnrollmentState {
   updateProgress: (id: string, progress: number) => void;
   payInstallment: (id: string) => void;
   markComplete: (id: string) => void;
+  clearEnrollments: () => void;
 }
 
 export const useEnrollmentStore = create<EnrollmentState>()(
   persist(
     (set, get) => ({
       enrollments: [],
-      
+      clearEnrollments: () => set({ enrollments: [] }),
+
       addEnrollment: (enrollment) => set((state) => {
         // Prevent duplicates by slug/ID
         const exists = state.enrollments.some(e => e.certificationId === enrollment.certificationId);
@@ -28,9 +30,9 @@ export const useEnrollmentStore = create<EnrollmentState>()(
       },
 
       updateProgress: (id, progress) => set((state) => ({
-        enrollments: state.enrollments.map((e) => 
-          e.id === id ? { 
-            ...e, 
+        enrollments: state.enrollments.map((e) =>
+          e.id === id ? {
+            ...e,
             completionPercentage: Math.min(100, Math.max(0, progress)),
             modulesCompleted: Math.floor((Math.min(100, Math.max(0, progress)) / 100) * 10) // Approx mapping for demo
           } : e
@@ -38,7 +40,7 @@ export const useEnrollmentStore = create<EnrollmentState>()(
       })),
 
       markComplete: (id) => set((state) => ({
-        enrollments: state.enrollments.map((e) => 
+        enrollments: state.enrollments.map((e) =>
           e.id === id ? { ...e, completionPercentage: 100, modulesCompleted: 10 } : e
         )
       })),
@@ -46,21 +48,21 @@ export const useEnrollmentStore = create<EnrollmentState>()(
       payInstallment: (id) => set((state) => ({
         enrollments: state.enrollments.map((e) => {
           if (e.id !== id) return e;
-          
+
           // Calculate installment amount (approx 1/3 of total)
           const standardInstallment = Math.ceil(e.totalAmount / 3);
           const remaining = e.totalAmount - e.amountPaid;
           const payAmount = Math.min(standardInstallment, remaining);
-          
+
           const newAmountPaid = e.amountPaid + payAmount;
           const newInstallmentCount = e.installmentsPaidCount + 1;
-          
+
           // Check if fully paid (either amount met or 3rd installment paid)
           const isFullyPaid = newAmountPaid >= e.totalAmount || newInstallmentCount >= 3;
-          
+
           // Next due date: +30 days if not paid, undefined if paid
-          const nextDue = isFullyPaid 
-            ? undefined 
+          const nextDue = isFullyPaid
+            ? undefined
             : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
           return {

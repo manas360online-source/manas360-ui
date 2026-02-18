@@ -11,11 +11,11 @@ export const CheckoutPage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
     const { addEnrollment, getEnrollmentBySlug } = useEnrollmentStore();
-    
+
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
     const [plan, setPlan] = useState<'full' | 'installment'>('full');
-    
+
     const cert = CERTIFICATIONS.find(c => c.slug === slug);
     const existingEnrollment = slug ? getEnrollmentBySlug(slug) : undefined;
 
@@ -38,44 +38,24 @@ export const CheckoutPage: React.FC = () => {
     const nextMonth = new Date(today); nextMonth.setDate(today.getDate() + 30);
     const monthAfter = new Date(today); monthAfter.setDate(today.getDate() + 60);
 
-    // Simulate Processing Logic
-    const handleTransaction = async (isSuccess: boolean) => {
+    // Redirect to Payment Gateway
+    const handlePayment = () => {
         setProcessing(true);
-        
-        // Fake network delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        setProcessing(false);
 
-        if (isSuccess) {
-            // Create Enrollment Object
-            const newEnrollment: Enrollment = {
-                id: `ENR-${Date.now()}`,
-                certificationId: cert.id,
-                certificationName: cert.name,
-                slug: cert.slug,
-                badgeColor: cert.badgeColor,
-                enrollmentDate: new Date().toISOString().split('T')[0],
-                paymentStatus: plan === 'full' ? 'Paid' : 'Partial',
-                paymentPlan: plan,
-                amountPaid: totalToday,
-                totalAmount: cert.price_inr,
-                installmentsPaidCount: 1, // First payment always counts as 1 installment (or full)
-                completionPercentage: 0,
-                modulesCompleted: 0,
-                nextInstallmentDue: plan === 'installment' 
-                    ? nextMonth.toISOString() 
-                    : undefined
-            };
+        const returnUrl = `#/certification-platform/payment-success?slug=${cert.slug}&plan=${plan}`;
+        const planName = `${cert.name} (${plan === 'full' ? 'Full' : 'Installment'})`;
+        const priceLabel = plan === 'full' ? `₹${cert.price_inr}` : `₹${installmentAmount}/mo`;
 
-            addEnrollment(newEnrollment);
-            
-            // Navigate to Success
-            navigate(`/payment-success?slug=${cert.slug}&plan=${plan}`);
-        } else {
-            // Navigate to Failure
-            navigate(`/payment-failed?slug=${cert.slug}`);
-        }
+        // Encode parameters
+        const params = new URLSearchParams();
+        params.append('planName', planName);
+        params.append('price', priceLabel);
+        params.append('returnUrl', returnUrl);
+
+        // Simulate short delay for UX then redirect
+        setTimeout(() => {
+            window.location.hash = `#/payment-landing?${params.toString()}`;
+        }, 800);
     };
 
     if (loading) {
@@ -89,12 +69,12 @@ export const CheckoutPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-slate-50 py-12 px-4">
             <SEO title={`Checkout - ${cert.name}`} />
-            
+
             <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
                 {/* Order Summary */}
                 <div className="space-y-6">
                     <h1 className="text-3xl font-serif font-bold text-slate-800">Checkout</h1>
-                    
+
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                         <h2 className="text-sm uppercase tracking-wide text-slate-500 font-bold mb-4">Order Summary</h2>
                         <div className="flex justify-between items-start mb-4">
@@ -109,23 +89,23 @@ export const CheckoutPage: React.FC = () => {
                                 {cert.name.charAt(0)}
                             </div>
                         </div>
-                        
+
                         {/* Breakdown */}
                         <div className="space-y-2 mb-4">
-                             <div className="flex justify-between text-sm text-slate-600">
+                            <div className="flex justify-between text-sm text-slate-600">
                                 <span>{cert.modulesCount} Modules</span>
                                 <span>Included</span>
-                             </div>
-                             <div className="flex justify-between text-sm text-slate-600">
+                            </div>
+                            <div className="flex justify-between text-sm text-slate-600">
                                 <span>Certification Fee</span>
                                 <span>₹{cert.price_inr.toLocaleString()}</span>
-                             </div>
-                             {plan === 'installment' && (
+                            </div>
+                            {plan === 'installment' && (
                                 <div className="flex justify-between text-sm text-slate-600">
                                     <span>Installment Fee</span>
                                     <span>₹0</span>
                                 </div>
-                             )}
+                            )}
                         </div>
 
                         <div className="border-t border-slate-100 pt-4 flex justify-between items-center font-bold text-slate-800 text-lg">
@@ -146,26 +126,25 @@ export const CheckoutPage: React.FC = () => {
                 {/* Payment Details */}
                 <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 h-fit">
                     {cert.price_inr === 0 ? (
-                         <div className="text-center py-8">
+                        <div className="text-center py-8">
                             <h3 className="text-xl font-bold text-slate-800 mb-4">Free Enrollment</h3>
-                            <button 
-                                onClick={() => handleTransaction(true)}
+                            <button
+                                onClick={handlePayment}
                                 disabled={processing}
                                 className="w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-purple-700 transition disabled:opacity-50"
                             >
                                 {processing ? 'Enrolling...' : 'Confirm Enrollment'}
                             </button>
-                         </div>
+                        </div>
                     ) : (
                         <>
                             <h3 className="text-xl font-bold text-slate-800 mb-6">Select Payment Plan</h3>
-                            
+
                             <div className="space-y-4 mb-8">
-                                <div 
+                                <div
                                     onClick={() => setPlan('full')}
-                                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                                    plan === 'full' ? 'border-purple-600 bg-purple-50 ring-1 ring-purple-600' : 'border-slate-100 hover:border-slate-200'
-                                    }`}
+                                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${plan === 'full' ? 'border-purple-600 bg-purple-50 ring-1 ring-purple-600' : 'border-slate-100 hover:border-slate-200'
+                                        }`}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="font-bold text-slate-800">Pay in Full</span>
@@ -175,11 +154,10 @@ export const CheckoutPage: React.FC = () => {
                                     <p className="text-xs text-slate-500 mt-1">Save instant access fees</p>
                                 </div>
 
-                                <div 
+                                <div
                                     onClick={() => setPlan('installment')}
-                                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                                    plan === 'installment' ? 'border-purple-600 bg-purple-50 ring-1 ring-purple-600' : 'border-slate-100 hover:border-slate-200'
-                                    }`}
+                                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${plan === 'installment' ? 'border-purple-600 bg-purple-50 ring-1 ring-purple-600' : 'border-slate-100 hover:border-slate-200'
+                                        }`}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="font-bold text-slate-800">3 Monthly Installments</span>
@@ -188,15 +166,15 @@ export const CheckoutPage: React.FC = () => {
                                     <div className="text-2xl font-bold text-slate-900 mt-2">
                                         ₹{installmentAmount.toLocaleString()} <span className="text-sm font-normal text-slate-500">/mo</span>
                                     </div>
-                                    
+
                                     {plan === 'installment' && (
                                         <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
                                             <div className="flex items-center gap-2 text-xs text-slate-600">
-                                                <Calendar size={12} className="text-purple-500"/>
+                                                <Calendar size={12} className="text-purple-500" />
                                                 <span>Payment 2: ₹{installmentAmount.toLocaleString()} due {nextMonth.toLocaleDateString()}</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-xs text-slate-600">
-                                                <Calendar size={12} className="text-purple-500"/>
+                                                <Calendar size={12} className="text-purple-500" />
                                                 <span>Payment 3: ₹{installmentAmount.toLocaleString()} due {monthAfter.toLocaleDateString()}</span>
                                             </div>
                                         </div>
@@ -204,9 +182,8 @@ export const CheckoutPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Main Pay Button */}
-                            <button 
-                                onClick={() => handleTransaction(true)}
+                            <button
+                                onClick={handlePayment}
                                 disabled={processing}
                                 className="w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-purple-700 transition flex items-center justify-center gap-2 disabled:opacity-70 mb-6"
                             >
@@ -219,33 +196,12 @@ export const CheckoutPage: React.FC = () => {
                                     </>
                                 )}
                             </button>
-                            
+
                             <div className="flex items-center justify-center gap-2 text-slate-300 text-xs mb-8">
                                 <CreditCard size={14} /> Secure Mock Payment
                             </div>
 
-                            {/* Dev Tools */}
-                            <div className="border-t border-slate-100 pt-6">
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                    <TestTube size={12} /> Developer Simulation
-                                </p>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <button 
-                                        onClick={() => handleTransaction(true)}
-                                        disabled={processing}
-                                        className="py-2 px-3 bg-green-50 text-green-700 text-xs font-bold rounded-lg border border-green-200 hover:bg-green-100 transition"
-                                    >
-                                        Simulate Success
-                                    </button>
-                                    <button 
-                                        onClick={() => handleTransaction(false)}
-                                        disabled={processing}
-                                        className="py-2 px-3 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200 hover:bg-red-100 transition"
-                                    >
-                                        Simulate Failure
-                                    </button>
-                                </div>
-                            </div>
+                            {/* Dev Tools Removed */}
 
                         </>
                     )}

@@ -17,7 +17,7 @@ const AR_THEMES = [
     id: 'green-tea',
     title: 'Green Tea Plantation',
     videoUrl: 'https://manas360-themed-rooms.s3.ap-south-1.amazonaws.com/themes/green-tea-plantations-in-munnar-kerala-india.mp4',
-    audioUrl: 'https://cdn.pixabay.com/audio/2022/04/27/audio_65b3693f93.mp3', 
+    audioUrl: 'https://cdn.pixabay.com/audio/2022/04/27/audio_65b3693f93.mp3',
     thumbnail: 'public/images/Tea-estate.jpg', // Local image for better optimization
     icon: '🍃',
     tier: 'free'
@@ -62,7 +62,7 @@ const AR_THEMES = [
     id: 'real-room-ar',
     title: 'YOUR REAL ROOM',
     videoUrl: '', // Camera based
-    audioUrl: '', 
+    audioUrl: '',
     thumbnail: '/images/AR-room.jpg', // Local image for better optimization
     icon: '🦋',
     tier: 'plus',
@@ -73,10 +73,35 @@ const AR_THEMES = [
 export const ARThemedRoomLanding: React.FC = () => {
   const { i18n } = useTranslation();
   const [currentPlan, setCurrentPlan] = useState<'free' | 'premier' | 'plus'>('free');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successPlanName, setSuccessPlanName] = useState('');
 
   useEffect(() => {
     setCurrentPlan(storageService.getARPlan());
     window.scrollTo(0, 0);
+
+    // Check for success callback
+    const hash = window.location.hash;
+    const queryString = hash.split('?')[1] || '';
+    const params = new URLSearchParams(queryString);
+
+    if (params.get('success') === 'true') {
+      const planParam = params.get('plan');
+      if (planParam) {
+        setSuccessPlanName(planParam === 'premier' ? 'AR Premier' : 'AR Premier Plus');
+        // Save immediately to ensure logic consistency if user refreshes
+        storageService.saveARPlan(planParam as 'premier' | 'plus');
+        storageService.saveSubscription({
+          category: 'AR Themed Room',
+          planName: planParam === 'premier' ? 'Premier' : 'Premier Plus',
+          price: planParam === 'premier' ? '₹99/month' : '₹199/month'
+        });
+        setCurrentPlan(planParam as 'premier' | 'plus');
+      }
+      setShowSuccessModal(true);
+      // Clean URL
+      window.history.replaceState(null, '', `#/en/ar-themed-room`);
+    }
   }, []);
 
   const handleBack = () => {
@@ -97,6 +122,10 @@ export const ARThemedRoomLanding: React.FC = () => {
     if (wall) {
       wall.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleModalOk = () => {
+    setShowSuccessModal(false);
   };
 
   const handleThemeClick = (theme: typeof AR_THEMES[0]) => {
@@ -129,7 +158,7 @@ export const ARThemedRoomLanding: React.FC = () => {
     const isRealRoom = theme.id === 'real-room-ar';
 
     return (
-      <div 
+      <div
         key={theme.id}
         onClick={() => handleThemeClick(theme)}
         className={`
@@ -138,16 +167,16 @@ export const ARThemedRoomLanding: React.FC = () => {
           ${isRealRoom ? 'md:col-span-2' : ''}
         `}
       >
-        <img 
-          src={theme.thumbnail} 
-          alt={theme.title} 
+        <img
+          src={theme.thumbnail}
+          alt={theme.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 flex flex-col justify-end">
           <div className="text-3xl mb-2 drop-shadow-md">{theme.icon}</div>
           <h3 className="font-serif text-2xl font-bold text-white drop-shadow-md leading-tight">{theme.title}</h3>
           {theme.isRealAR && (
-             <p className="text-white/80 text-xs font-medium mt-1">Live Camera AR</p>
+            <p className="text-white/80 text-xs font-medium mt-1">Live Camera AR</p>
           )}
           <div className="mt-2 flex items-center gap-2">
             {locked ? (
@@ -167,7 +196,7 @@ export const ARThemedRoomLanding: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-[#1A1A1A] relative overflow-x-hidden">
-      
+
       {/* ABSOLUTE NAZAR BOTTU */}
       <div className="absolute top-6 right-6 z-[2000] select-none pointer-events-none drop-shadow-sm">
         <span className="text-[28px] leading-none">🧿</span>
@@ -178,8 +207,8 @@ export const ARThemedRoomLanding: React.FC = () => {
         <button onClick={handleBack} className="text-white font-bold text-lg drop-shadow-lg flex items-center gap-2 hover:opacity-80 transition-opacity bg-black/10 backdrop-blur-[2px] rounded-full px-4 py-1">
           ← Back
         </button>
-        
-        <button 
+
+        <button
           onClick={handleSeePlans}
           className="bg-white/20 backdrop-blur-md px-5 py-2 rounded-full text-white text-sm font-bold border border-white/30 hover:bg-white/30 transition-all shadow-lg"
         >
@@ -190,7 +219,7 @@ export const ARThemedRoomLanding: React.FC = () => {
       {/* HERO SECTION WITH BACKGROUND IMAGE */}
       <section className="relative h-[85vh] min-h-[600px] flex flex-col items-center justify-center text-center px-6">
         {/* Background Image - Specific Mountain/Pine Tree/River Valley */}
-        <div 
+        <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-slate-400"
           style={{
             backgroundImage: 'url("https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2560&auto=format&fit=crop")'
@@ -208,7 +237,7 @@ export const ARThemedRoomLanding: React.FC = () => {
           <p className="text-xl md:text-2xl text-white font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] mb-12">
             Transform your surroundings into a calming visual sanctuary
           </p>
-          <button 
+          <button
             onClick={startTrial}
             className="px-10 py-4 bg-white text-[#0A3A78] rounded-full font-bold text-lg hover:shadow-xl hover:scale-105 transition-all shadow-lg active:scale-95 border border-white/50"
           >
@@ -255,6 +284,24 @@ export const ARThemedRoomLanding: React.FC = () => {
         </div>
 
       </section>
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-[32px] p-10 max-w-sm w-full text-center shadow-2xl animate-fade-in-up border border-slate-100">
+            <div className="text-6xl mb-6">✅</div>
+            <h3 className="font-serif text-2xl font-bold text-[#0A3A78] mb-4">Subscription Successful</h3>
+            <p className="text-slate-600 mb-8 font-medium">
+              You have successfully subscribed to <br /><span className="text-[#1FA2DE] font-bold text-lg">{successPlanName}</span>
+            </p>
+            <button
+              onClick={handleModalOk}
+              className="w-full py-4 rounded-full bg-gradient-to-r from-[#0052CC] to-[#2684FF] text-white font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
