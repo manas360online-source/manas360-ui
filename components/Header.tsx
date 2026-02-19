@@ -384,6 +384,7 @@ function LoginDropdown({ isOpen, onClose, onLoginClick }: { isOpen: boolean, onC
     { id: 'healthcare', label: "Healthcare Login", icon: "🏥", desc: "Clinic / hospital", color: C.teal },
     { id: 'insurance', label: "Insurance Login", icon: "🛡️", desc: "Partner portal", color: C.gold },
     { id: 'govt', label: "Government Login", icon: "🏛️", desc: "Tele-MANAS / ASHA", color: C.orange },
+    { id: 'admin', label: "Admin Login", icon: "🔐", desc: "System administration", color: C.rose },
   ];
 
   return (
@@ -731,14 +732,20 @@ export const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
               <div className="ml-auto hidden lg:flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 rounded-full p-1 pl-3">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Quick Access:</span>
                 {[
-                  { icon: "📞", label: "IVR", tip: "Call & Talk", href: "crisis" },
+                  { icon: "📞", label: "IVR", tip: "Call 08069409284", href: "tel:08069409284" },
                   { icon: "👩\u200d⚕️", label: "Dr. Meera", tip: "AI Therapy", href: "home" },
                   { icon: "🫂", label: "Buddy", tip: "24/7 Chat", href: "home" },
                 ].map((q, i) => (
                   <div
                     key={i}
                     title={q.tip}
-                    onClick={() => window.location.hash = `#/${i18n.language}/${q.href}`}
+                    onClick={() => {
+                      if (q.href.startsWith('tel:')) {
+                        window.location.href = q.href;
+                      } else {
+                        window.location.hash = `#/${i18n.language}/${q.href}`;
+                      }
+                    }}
                     className="flex items-center gap-1 px-2 py-1 rounded-full bg-white dark:bg-slate-700 shadow-sm cursor-pointer text-[10px] font-bold text-slate-700 dark:text-slate-200 hover:scale-105 transition-transform"
                   >
                     <span>{q.icon}</span> {q.label}
