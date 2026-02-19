@@ -50,7 +50,7 @@ const INTENT_LANES = [
       { id: "dr_meera", label: "Dr. Meera AI", desc: "AR therapy guide", icon: "👩\u200d⚕️", badge: "AI", href: "meera-chat" },
       { id: "anytime_buddy", label: "Anytime Buddy", desc: "Chat companion, any hour", icon: "🫂", href: "home" },
       { id: "vent_buddy", label: "Vent Buddy", desc: "Safe space to express", icon: "💭", href: "home" },
-      { id: "ivr", label: "Call & Talk", desc: "Voice IVR in 7 languages", icon: "📞", href: "crisis" },
+      { id: "ivr", label: "Call & Talk", desc: "Voice IVR in 7 languages", icon: "📞", href: "tel:08069409284" },
       { id: "sound", label: "Sound Therapy", desc: "Sleep, calm, focus", icon: "🎵", href: "sound-therapy" },
       { id: "mood", label: "Mood Tracker", desc: "Daily wellness log", icon: "📊", href: "streaks" },
     ],
@@ -556,7 +556,11 @@ export const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 
   const handleItemClick = useCallback((item: any) => {
     if (item.href) {
-      window.location.hash = `#/${i18n.language}/${item.href}`;
+      if (item.href.startsWith('tel:')) {
+        window.location.href = item.href;
+      } else {
+        window.location.hash = `#/${i18n.language}/${item.href}`;
+      }
     }
   }, [i18n.language]);
 
