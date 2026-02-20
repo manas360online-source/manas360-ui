@@ -737,7 +737,7 @@ export const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Quick Access:</span>
                 {[
                   { icon: "📞", label: "IVR", tip: "Call 08069409284", href: "tel:08069409284" },
-                  { icon: "👩\u200d⚕️", label: "Dr. Meera", tip: "AI Therapy", href: "home" },
+                  { icon: "👩\u200d⚕️", label: "Dr. Meera", tip: "AI Therapy", href: "meera-chat" },
                   { icon: "🫂", label: "Buddy", tip: "24/7 Chat", href: "home" },
                 ].map((q, i) => (
                   <div

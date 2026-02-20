@@ -87,12 +87,12 @@ export function useAnalytics(): UseAnalyticsReturn {
                 analyticsApi.getDropoff(dateRange)
             ]);
 
-            setOverview(overviewData);
-            setSessions(sessionsData);
-            setOutcomes(outcomesData);
-            setTherapists(therapistsData);
-            setTrends(trendsData.sessions || []);
-            setDropoff(dropoffData);
+            setOverview(overviewData || null);
+            setSessions(sessionsData || null);
+            setOutcomes(outcomesData || null);
+            setTherapists(therapistsData || []);
+            setTrends(trendsData?.sessions || []);
+            setDropoff(dropoffData || null);
         } catch (err: any) {
             console.error('Analytics fetch error:', err);
             setError(err.response?.data?.error || err.message || 'Failed to load analytics');
