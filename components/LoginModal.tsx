@@ -78,6 +78,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, role })
     onClose();
     if (role === 'therapist') {
       window.location.hash = `#/${i18n.language}/therapist-onboarding`;
+    } else if (role === 'admin') {
+      window.location.hash = `#/${i18n.language}/admin/login`;
     } else {
       // Default to profile setup (User flow)
       window.location.hash = `#/${i18n.language}/profile-setup`;
