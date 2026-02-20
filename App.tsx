@@ -38,8 +38,8 @@ import { ARRealRoomPlayer } from './components/ARRealRoomplayer';
 import { FreeToolsPage } from './components/FreeToolsPage';
 import { QuickLaunchDock } from './components/QuickLaunchDock';
 import { LoginModal } from './components/LoginModal';
-
 import { ProfileSetup } from './components/ProfileSetup';
+import { ChoosePlanPage } from './components/ChoosePlanPage';
 import TherapistRegistrationFlow from './TherapistRegistrationFlow/TherapistRegistrationFlow';
 import TherapistOnboardingApp from './Therapist-Onboarding/App';
 import { PaymentOutcomeChoice } from './components/payment-gateway/PaymentOutcomeChoice';
@@ -98,6 +98,7 @@ export type ViewState =
   | 'free-tools'
 
   | 'profile-setup'
+  | 'choose-plan'
   | 'therapist-matching'
   | 'therapist-registration-flow'
   | 'therapist-onboarding'
@@ -156,6 +157,7 @@ const VIEW_MAP: Record<string, ViewState> = {
   'free-tools': 'free-tools',
 
   'profile-setup': 'profile-setup',
+  'choose-plan': 'choose-plan',
   'therapist-matching': 'therapist-matching',
   'therapist-onboarding': 'therapist-onboarding',
   'cbt-sessions': 'cbt-sessions',
@@ -517,6 +519,7 @@ const App: React.FC = () => {
       {currentView === 'free-tools' && <FreeToolsPage />}
 
       {currentView === 'profile-setup' && <ProfileSetup />}
+      {currentView === 'choose-plan' && <ChoosePlanPage />}
       {currentView === 'therapist-registration-flow' && <TherapistRegistrationFlow onBack={() => navigate('landing')} />}
       {currentView === 'therapist-onboarding' && <TherapistOnboardingApp onBack={() => navigate('landing')} />}
       {currentView === 'therapist-matching' && <MatchingApp basename={`/${i18n.language}/therapist-matching`} />}
