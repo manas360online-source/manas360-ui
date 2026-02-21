@@ -53,7 +53,11 @@ const INTENT_LANES = [
       { id: "dr_meera", label: "Dr. Meera AI", desc: "AR therapy guide", icon: "👩\u200d⚕️", badge: "AI", href: "meera-chat" },
       { id: "anytime_buddy", label: "Anytime Buddy", desc: "Chat companion, any hour", icon: "🫂", href: "home" },
       { id: "vent_buddy", label: "Vent Buddy", desc: "Safe space to express", icon: "💭", href: "home" },
+release/v1.0.0
       { id: "ivr", label: "Call & Talk", desc: "Voice IVR in 7 languages", icon: "📞", href: SUPPORT_TEL },
+
+      { id: "ivr", label: "Call & Talk", desc: "Voice IVR in 7 languages", icon: "📞", href: "tel:08069409284" },
+ main
       { id: "sound", label: "Sound Therapy", desc: "Sleep, calm, focus", icon: "🎵", href: "sound-therapy" },
       { id: "mood", label: "Mood Tracker", desc: "Daily wellness log", icon: "📊", href: "streaks" },
       { id: "digital_pet", label: "Digital Pet", desc: "Adopt a virtual companion", icon: "🐾", href: "digital-pet" },
@@ -387,7 +391,11 @@ function LoginDropdown({ isOpen, onClose, onLoginClick }: { isOpen: boolean, onC
     { id: 'healthcare', label: "Healthcare Login", icon: "🏥", desc: "Clinic / hospital", color: C.teal },
     { id: 'insurance', label: "Insurance Login", icon: "🛡️", desc: "Partner portal", color: C.gold },
     { id: 'govt', label: "Government Login", icon: "🏛️", desc: "Tele-MANAS / ASHA", color: C.orange },
+ release/v1.0.0
     { id: 'admin', label: "Admin Login", icon: "🔐", desc: "System Administration", color: C.dark },
+
+    { id: 'admin', label: "Admin Login", icon: "🔐", desc: "System administration", color: C.rose },
+ main
   ];
 
   return (
@@ -558,10 +566,19 @@ export const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
   };
 
   const handleItemClick = useCallback((item: any) => {
+release/v1.0.0
     if (!item.href) return;
     if (typeof item.href === 'string' && item.href.startsWith('tel:')) {
       window.location.href = item.href;
       return;
+
+    if (item.href) {
+      if (item.href.startsWith('tel:')) {
+        window.location.href = item.href;
+      } else {
+        window.location.hash = `#/${i18n.language}/${item.href}`;
+      }
+main
     }
     window.location.hash = `#/${i18n.language}/${item.href}`;
   }, [i18n.language]);
@@ -746,14 +763,28 @@ export const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
               <div className="ml-auto hidden lg:flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 rounded-full p-1 pl-3">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Quick Access:</span>
                 {[
+ release/v1.0.0
                   { icon: "📞", label: "IVR", tip: "Call & Talk", href: SUPPORT_TEL },
+
+                  { icon: "📞", label: "IVR", tip: "Call 08069409284", href: "tel:08069409284" },
+ main
                   { icon: "👩\u200d⚕️", label: "Dr. Meera", tip: "AI Therapy", href: "meera-chat" },
                   { icon: "🫂", label: "Buddy", tip: "24/7 Chat", href: "home" },
                 ].map((q, i) => (
                   <div
                     key={i}
                     title={q.tip}
+ release/v1.0.0
                     onClick={() => handleItemClick(q)}
+
+                    onClick={() => {
+                      if (q.href.startsWith('tel:')) {
+                        window.location.href = q.href;
+                      } else {
+                        window.location.hash = `#/${i18n.language}/${q.href}`;
+                      }
+                    }}
+ main
                     className="flex items-center gap-1 px-2 py-1 rounded-full bg-white dark:bg-slate-700 shadow-sm cursor-pointer text-[10px] font-bold text-slate-700 dark:text-slate-200 hover:scale-105 transition-transform"
                   >
                     <span>{q.icon}</span> {q.label}

@@ -60,7 +60,13 @@ import SchoolWellnessApp from './school-wellness/App';
 import CorporateWellnessApp from './corporate-wellness/App';
 import MatchingApp from './connecting-patients-to-matched-therapists/App';
 import SingleMeetingJitsi from './single meeting jitsi/App';
+release/v1.0.0
 import AdminApp from './Admin/frontend/src/App';
+
+import { AnalyticsDashboard } from './Admin/frontend/src/pages/AnalyticsDashboard';
+// import './Admin/frontend/src/index.css'; // Commented out to avoid global style conflicts for now, will enable if needed
+
+ main
 
 
 export type ViewState =
@@ -116,8 +122,12 @@ export type ViewState =
 
   | 'corporate-wellness'
   | 'video-session'
+release/v1.0.0
   | 'digital-pet'
   | 'admin-login'
+=======
+  | 'admin-dashboard'
+ main
 
 
 type AssessmentData = Record<string, unknown> | null;
@@ -174,8 +184,12 @@ const VIEW_MAP: Record<string, ViewState> = {
   'school-wellness': 'school-wellness',
   'corporate-wellness': 'corporate-wellness',
   'video-session': 'video-session',
+ release/v1.0.0
   'digital-pet': 'digital-pet',
   'admin/login': 'admin-login',
+
+  'admin-dashboard': 'admin-dashboard',
+ main
 };
 
 const PREFIX_VIEWS: Array<{ prefix: string; view: ViewState }> = [
@@ -273,6 +287,8 @@ const App: React.FC = () => {
             setCurrentView('payment-success');
           } else if (normalizedView.startsWith('payment-failure')) {
             setCurrentView('payment-failure');
+          } else if (normalizedView.startsWith('admin-dashboard')) {
+            setCurrentView('admin-dashboard');
 
           } else {
             setCurrentView(resolveViewFromPath(normalizedView));
@@ -536,8 +552,12 @@ const App: React.FC = () => {
       {currentView === 'school-wellness' && <SchoolWellnessApp onBack={() => navigate('home')} />}
       {currentView === 'corporate-wellness' && <CorporateWellnessApp onBack={() => navigate('home')} />}
       {currentView === 'video-session' && <SingleMeetingJitsi onBack={() => navigate('therapist-matching/patient')} onHome={() => navigate('home')} />}
+ release/v1.0.0
       {currentView === 'digital-pet' && <DigitalPetHub onBack={() => navigate('home')} />}
       {currentView === 'admin-login' && <AdminApp />}
+
+      {currentView === 'admin-dashboard' && <AnalyticsDashboard />}
+ main
 
     </div>
   );

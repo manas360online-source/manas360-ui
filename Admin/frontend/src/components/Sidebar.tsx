@@ -92,6 +92,25 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onNavigate }) => {
                     ))}
                 </ul>
 
+ release/v1.0.0
+
+                <div className="mt-4 px-2">
+                    <button
+                        onClick={() => {
+                            // Helper for now, can be replaced with actual auth logic later
+                            console.log('Sign out clicked');
+                            window.location.href = '/login';
+                        }}
+                        className="flex w-full items-center rounded-xl p-2 transition-colors text-calm-blue hover:bg-calm-lavender/30 border border-calm-blue/20"
+                    >
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span className="ml-3 font-medium">Sign Out</span>
+                    </button>
+                </div>
+
+ main
                 {/* Bottom Profile */}
                 <div className="mt-auto border-t border-calm-lightBlue/20 pt-4">
                     <a href="#" className="flex items-center rounded-xl p-2 text-calm-text/70 hover:bg-calm-lavender/30 hover:text-calm-blue">
