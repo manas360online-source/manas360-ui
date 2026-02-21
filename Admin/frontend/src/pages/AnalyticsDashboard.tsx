@@ -12,7 +12,10 @@ import { OutcomeBarChart, ImprovementRateChart } from '../components/OutcomeChar
 import { TherapistPerformanceTable, TherapistComparisonChart } from '../components/TherapistPerformance';
 import { ExportButtons, DateRangePicker } from '../components/ExportButtons';
 import Sidebar from '../components/Sidebar';
+ release/v1.0.0
+
 import '../../../../src/styles/admin-theme.css';
+ main
 
 import { TherapistOnboardingModal } from '../components/TherapistOnboardingModal';
 import { ClinicalSessionJournal } from '../components/ClinicalSessionJournal';
@@ -141,7 +144,11 @@ export const AnalyticsDashboard: React.FC = () => {
     }
 
     return (
+ release/v1.0.0
+        <div className="min-h-screen font-sans" style={{ backgroundColor: 'var(--calm-bg)' }}>
+
         <div className="min-h-screen font-sans admin-theme-wrapper" style={{ backgroundColor: 'var(--calm-bg)' }}>
+ main
             <Sidebar activeSection={activeSection} onNavigate={setActiveSection} />
             <div className="sm:ml-64 transition-all min-h-screen flex flex-col">
                 {/* Header */}

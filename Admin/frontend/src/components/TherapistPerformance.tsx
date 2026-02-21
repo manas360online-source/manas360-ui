@@ -44,7 +44,11 @@ export const TherapistPerformanceTable: React.FC<TherapistPerformanceProps> = ({
         <div className="rounded-2xl border border-calm-lightBlue/20 bg-white/60 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-shadow">
             <h3 className="mb-4 text-lg font-semibold text-calm-blue">{title}</h3>
 
+ release/v1.0.0
+            {(!data || data.length === 0) ? (
+
             {data.length === 0 ? (
+main
                 <div className="flex h-40 items-center justify-center text-calm-text/50">
                     No therapist data available
                 </div>
@@ -120,7 +124,11 @@ export const TherapistComparisonChart: React.FC<TherapistPerformanceProps> = ({
     data,
     title = "Sessions by Therapist"
 }) => {
+ release/v1.0.0
+    const chartData = (data || []).slice(0, 8).map(d => ({
+
     const chartData = data.slice(0, 8).map(d => ({
+ main
         name: d.name.split(' ')[0], // First name only
         sessions: d.totalSessions,
         completed: d.completedSessions,

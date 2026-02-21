@@ -188,37 +188,61 @@ class AnalyticsApi {
         const response: AxiosResponse<ApiResponse<OverviewMetrics>> = await this.client.get('/analytics/overview', {
             params: dateRange
         });
+ release/v1.0.0
+        return response.data?.data;
+
         return response.data.data;
+ main
     }
 
     async getSessions(dateRange: DateRange): Promise<{ byType: SessionMetric[]; byMode: SessionMetric[] }> {
         const response: AxiosResponse<ApiResponse<{ byType: SessionMetric[]; byMode: SessionMetric[] }>> =
             await this.client.get('/analytics/sessions', { params: dateRange });
+release/v1.0.0
+        return response.data?.data;
+
         return response.data.data;
+ main
     }
 
     async getOutcomes(dateRange: DateRange): Promise<{ byAssessmentType: OutcomeMetric[] }> {
         const response: AxiosResponse<ApiResponse<{ byAssessmentType: OutcomeMetric[] }>> =
             await this.client.get('/analytics/outcomes', { params: dateRange });
+ release/v1.0.0
+        return response.data?.data;
+
         return response.data.data;
+ main
     }
 
     async getTherapists(dateRange: DateRange, limit: number = 10): Promise<TherapistMetric[]> {
         const response: AxiosResponse<ApiResponse<TherapistMetric[]>> =
             await this.client.get('/analytics/therapists', { params: { ...dateRange, limit } });
+ release/v1.0.0
+        return response.data?.data;
+
         return response.data.data;
+ main
     }
 
     async getTrends(dateRange: DateRange, interval: 'day' | 'week' | 'month' = 'day'): Promise<{ sessions: TrendData[] }> {
         const response: AxiosResponse<ApiResponse<{ sessions: TrendData[] }>> =
             await this.client.get('/analytics/trends', { params: { ...dateRange, interval } });
+ release/v1.0.0
+        return response.data?.data;
+
         return response.data.data;
+ main
     }
 
     async getDropoff(dateRange: DateRange): Promise<any> {
         const response: AxiosResponse<ApiResponse<any>> =
             await this.client.get('/analytics/dropoff', { params: dateRange });
+release/v1.0.0
+        return response.data?.data;
+
         return response.data.data;
+ main
     }
 
     getExportExcelUrl(dateRange: DateRange): string {

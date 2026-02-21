@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k \"npm run server\" \"npm run client\"",
+    "dev": "concurrently -k \"npm run server\" \"npm run client\" \"npm run admin-server\"",
     "client": "vite",
     "server": "nodemon server.js",
+    "admin-server": "cd Admin/backend && npm start",
     "build": "vite build",
     "preview": "vite preview"
   },

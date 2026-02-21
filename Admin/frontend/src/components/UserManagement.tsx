@@ -17,7 +17,11 @@ const DUMMY_USERS: AdminUser[] = [
 
 export const UserManagement: React.FC<UserManagementProps> = ({ users, onVerify, loading }) => {
     const [search, setSearch] = useState('');
+ release/v1.0.0
+    const displayUsers = (users && users.length > 0) ? users : DUMMY_USERS;
+
     const displayUsers = users && users.length > 0 ? users : DUMMY_USERS;
+main
 
     const filteredUsers = displayUsers.filter(user =>
         user.fullName.toLowerCase().includes(search.toLowerCase()) ||

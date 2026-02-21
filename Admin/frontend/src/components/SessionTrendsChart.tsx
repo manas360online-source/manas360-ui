@@ -36,7 +36,11 @@ export const SessionTrendsChart: React.FC<SessionTrendsChartProps> = ({
         <div className="rounded-2xl border border-calm-lightBlue/20 bg-white/60 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-shadow">
             <h3 className="mb-4 text-lg font-semibold text-calm-blue">{title}</h3>
 
+ release/v1.0.0
+            {(!data || data.length === 0) ? (
+
             {data.length === 0 ? (
+ main
                 <div className="flex h-64 items-center justify-center text-calm-text/50">
                     No trend data available
                 </div>
@@ -108,7 +112,11 @@ export const CompletionRateTrendChart: React.FC<SessionTrendsChartProps> = ({
     data,
     title = "Completion Rate Trend"
 }) => {
+ release/v1.0.0
+    const chartData = (data || []).map(d => ({
+
     const chartData = data.map(d => ({
+ main
         ...d,
         completionRate: parseFloat(d.completionRate)
     }));

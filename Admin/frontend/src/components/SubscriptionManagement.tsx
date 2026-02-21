@@ -47,7 +47,11 @@ const DUMMY_SUBS: SubscriptionDetails[] = [
 
 export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({ subscriptions, loading }) => {
     const [filter, setFilter] = useState('all');
+release/v1.0.0
+    const displaySubs = (subscriptions && subscriptions.length > 0) ? subscriptions : DUMMY_SUBS;
+
     const displaySubs = subscriptions && subscriptions.length > 0 ? subscriptions : DUMMY_SUBS;
+ main
 
     const filteredSubscriptions = displaySubs.filter(sub =>
         filter === 'all' ? true : sub.status === filter
