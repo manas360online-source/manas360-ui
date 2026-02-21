@@ -738,13 +738,7 @@ export const HomePage: React.FC = () => {
             <div className="w-24 h-24 bg-amber-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-5xl mb-10"> 🐕 </div>
             <h3 className="font-serif text-[2.4rem] text-[#0A3A78] dark:text-white mb-6">{t('pet_therapy')}</h3>
             <p className="text-[#475569] dark:text-slate-400 text-[1.15rem] mb-12"> {t('pet_therapy_desc')} </p>
-            <button
-              type="button"
-              onClick={() => window.location.hash = `#/${i18n.language}/digital-pet`}
-              className="px-10 py-5 rounded-full bg-white dark:bg-slate-800 text-[#D97706] dark:text-amber-400 font-bold border-2 border-amber-100 dark:border-slate-700 hover:bg-[#D97706] hover:text-white transition-all"
-            >
-              {t('meet_fluffy')}
-            </button>
+            <button type="button" className="px-10 py-5 rounded-full bg-white dark:bg-slate-800 text-[#D97706] dark:text-amber-400 font-bold border-2 border-amber-100 dark:border-slate-700 hover:bg-[#D97706] hover:text-white transition-all"> {t('meet_fluffy')} </button>
           </div>
         </div>
       </section>

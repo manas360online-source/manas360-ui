@@ -92,8 +92,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onNavigate }) => {
                     ))}
                 </ul>
 
- release/v1.0.0
-
                 <div className="mt-4 px-2">
                     <button
                         onClick={() => {
@@ -110,7 +108,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onNavigate }) => {
                     </button>
                 </div>
 
- main
                 {/* Bottom Profile */}
                 <div className="mt-auto border-t border-calm-lightBlue/20 pt-4">
                     <a href="#" className="flex items-center rounded-xl p-2 text-calm-text/70 hover:bg-calm-lavender/30 hover:text-calm-blue">

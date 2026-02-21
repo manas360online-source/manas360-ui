@@ -30,11 +30,7 @@ export const OutcomeBarChart: React.FC<OutcomeChartProps> = ({
     data,
     title = "Assessment Outcomes"
 }) => {
-release/v1.0.0
-    const chartData = (data || []).map(d => ({
-
     const chartData = data.map(d => ({
-main
         name: d.type,
         'Pre Score': parseFloat(d.avgPreScore),
         'Post Score': parseFloat(d.avgPostScore),
@@ -77,11 +73,7 @@ export const ImprovementRateChart: React.FC<OutcomeChartProps> = ({
     data,
     title = "Improvement Rate by Assessment"
 }) => {
-
-    const chartData = (data || []).map((d, index) => ({
-
     const chartData = data.map((d, index) => ({
- main
         name: d.type,
         value: parseFloat(d.improvementRate),
         count: d.count,
@@ -134,11 +126,7 @@ export const ImprovementRateChart: React.FC<OutcomeChartProps> = ({
 
             {/* Stats Cards */}
             <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-release/v1.0.0
-                {(data || []).map((d, idx) => (
-
                 {data.map((d, idx) => (
- main
                     <div
                         key={d.type}
                         className="rounded-xl p-3 text-center transition-all hover:scale-105"
